@@ -1,8 +1,20 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import "../styles/globals.css";
+import Layout from "../components/layout";
+import { SessionProvider } from "next-auth/react";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+const queryClient = new QueryClient();
+
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider session={session}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </SessionProvider>
+    </QueryClientProvider>
+  );
 }
 
-export default MyApp
+export default MyApp;
