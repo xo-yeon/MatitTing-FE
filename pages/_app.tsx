@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import Layout from "../components/layout";
+import Layout from "../src/component/layout";
 import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import type { AppProps } from "next/app";
