@@ -1,9 +1,27 @@
 import { useCallback, useEffect, useState } from "react";
-import { css } from "@emotion/react";
 import { useRouter } from "next/router";
+import styled from "@emotion/styled";
 import NavList from "./navList";
 
-export default function Bottombar() {
+const Container = styled.div`
+  width: 768px;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  border-top: 1px solid #dddddd;
+`;
+const NavContainer = styled.div`
+  width: 390px;
+  height: 75px;
+  display: flex;
+  padding: 0px 30px;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+`;
+
+const Bottombar = () => {
   const router = useRouter();
   const [pageIndex, setPageIndex] = useState<number | null>(null);
 
@@ -25,50 +43,50 @@ export default function Bottombar() {
   }, [findIndex]);
 
   return (
-    <div css={navCSS}>
-      {navList.map((e, i) => {
-        return (
-          <NavList
-            title={e.title}
-            href={e.href}
-            key={i}
-            selected={pageIndex === i || findIndex() === i}
-            onClick={() => setPageIndex(i)}
-          />
-        );
-      })}
-    </div>
+    <Container>
+      <NavContainer>
+        {navList.map((e, i) => {
+          return (
+            <NavList
+              title={e.title}
+              icon={e.icon}
+              href={e.href}
+              key={i}
+              selected={pageIndex === i || findIndex() === i}
+              onClick={() => setPageIndex(i)}
+            />
+          );
+        })}
+      </NavContainer>
+    </Container>
   );
-}
+};
+
+export default Bottombar;
 
 const navList = [
   {
     title: "홈",
+    icon: "home",
     href: "/",
     regex: /^\/$/,
   },
   {
     title: "파티 생성",
+    icon: "add_box",
     href: "/create",
     regex: /^\/create/,
   },
   {
     title: "검색",
+    icon: "search",
     href: "/search",
     regex: /^\/search/,
   },
   {
     title: "프로필",
+    icon: "person",
     href: "/profile",
     regex: /^\/profile/,
   },
 ];
-
-const navCSS = css`
-  border-top: 1px solid #bbbbbb;
-  width: 768px;
-  height: 100px;
-  display: flex;
-  position: absolute;
-  bottom: 0;
-`;

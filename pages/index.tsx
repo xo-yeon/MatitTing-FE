@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import PartyList from "../components/partyList";
+import PartyList from "../components/common/partyList";
 
 export default function Home() {
   return (

@@ -2,7 +2,13 @@ import { useQuery } from "react-query";
 import { css } from "@emotion/react";
 import axios from "axios";
 
-export default function Profile(props) {
+const profileWrap = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Profile = (props) => {
   const profilefetcher = async () => {
     try {
       const response = await axios.get("url", {
@@ -18,11 +24,7 @@ export default function Profile(props) {
     return <span>Loading...</span>;
   }
 
-  return <div css={profileWrap}></div>;
-}
+  return <div css={profileWrap}> 프로필 페이지 </div>;
+};
 
-const profileWrap = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+export default Profile;

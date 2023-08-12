@@ -8,7 +8,7 @@ interface IProps {
   onClick?: () => void;
 }
 
-export default function PartyList(props: IProps) {
+const PartyList = (props: IProps) => {
   const router = useRouter();
 
   const partyListCSS = css`
@@ -33,4 +33,6 @@ export default function PartyList(props: IProps) {
       <p>{props.title}</p>
     </div>
   );
-}
+};
+
+export default PartyList;
