@@ -1,10 +1,11 @@
 import "../styles/globals.css";
 import Layout from "../src/component/layout";
-import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import type { AppProps } from "next/app";
-import { Session } from "next-auth";
 import { NextPageWithLayout } from "../types/layout";
+import { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
+import { ToastProvider } from "../src/contexts/ToastProvider";
+import type { AppProps } from "next/app";
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
@@ -24,7 +25,7 @@ function MyApp({
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        {getLayout(<Component {...pageProps} />)}
+        <ToastProvider>{getLayout(<Component {...pageProps} />)}</ToastProvider>
       </SessionProvider>
     </QueryClientProvider>
   );

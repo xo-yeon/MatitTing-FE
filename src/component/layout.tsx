@@ -1,43 +1,26 @@
-import Bottombar from "./common/bottombar";
+import React, { ReactNode } from "react";
+import Bottombar from "./common/Bottombar";
 import styled from "@emotion/styled";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-const Window = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-const App = styled.div`
+interface LayoutProps {
+  children: ReactNode;
+}
+
+const Container = styled.div`
+  position: relative;
   width: 768px;
+  height: 100%;
   display: flex;
   flex-direction: column;
 `;
 
-const Layout = ({ children }) => {
+function Layout({ children }: LayoutProps) {
   return (
-    <Window>
-      <App>
-        {children}
-        <Bottombar />
-      </App>
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        style={{ bottom: "80px" }}
-      />
-    </Window>
+    <Container>
+      {children}
+      <Bottombar />
+    </Container>
   );
-};
+}
 
 export default Layout;

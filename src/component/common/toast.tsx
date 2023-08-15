@@ -1,38 +1,26 @@
-import { toast } from "react-toastify";
+import styled from "@emotion/styled";
 
-interface IProps {
-  content: string;
-  type: string;
+interface ToastProps {
+  message: string;
 }
+const Container = styled.div`
+  position: absolute;
+  left: 50%;
+  bottom: 90px;
+  margin-left: -160px;
 
-const Toast = (props: IProps) => {
-  switch (props.type) {
-    case "info":
-      return toast.info(props.content, {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    case "warn":
-      return toast.warn(props.content, {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-  }
+  display: flex;
+  width: 320px;
+  padding: 12px 8px 12px 16px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: var(--neutral-white, #fff);
+  box-shadow: 0px 12px 24px 0px rgba(0, 0, 0, 0.2);
+`;
+
+const Toast = ({ message }: ToastProps) => {
+  return <Container>{message}</Container>;
 };
 
 export default Toast;
-
-// 공식문서
-// https://fkhadra.github.io/react-toastify/introduction/

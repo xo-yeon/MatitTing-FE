@@ -1,51 +1,79 @@
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import Toast from "./toast";
 
-interface IProps {
+import HomeSelected from "../../assets/icons/bottombar/home.svg";
+import HomeOutlined from "../../assets/icons/bottombar/home_outlined.svg";
+import CreateSelected from "../../assets/icons/bottombar/create.svg";
+import CreateOutlined from "../../assets/icons/bottombar/create_outlined.svg";
+import ProfileSelected from "../../assets/icons/bottombar/profile.svg";
+import ProfileOutlined from "../../assets/icons/bottombar/profile_outlined.svg";
+import SearchSelected from "../../assets/icons/bottombar/search.svg";
+import SearchOutlined from "../../assets/icons/bottombar/search_outlined.svg";
+interface NavListProps {
   title: string;
-  icon: string;
-  selected?: boolean;
   href: string;
-  onClick?: () => void;
+}
+interface BottomIconProps {
+  href: string;
+  selected: boolean;
 }
 
-const NavList = (props: IProps) => {
-  const Container = styled.div`
-    display: flex;
-    width: 64px;
-    height: 64px;
-    flex-direction: column;
-    border-radius: 8px;
-    gap: 6px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.1s;
-    p {
-      font-size: 12px;
-    }
-    &:hover {
-      background-color: #dddddd;
-    }
-    .material-symbols-rounded {
-      font-variation-settings: "FILL" ${props.selected ? "1" : "0"}, "wght" 400,
-        "GRAD" 200, "opsz" 48;
-    }
-  `;
+const Container = styled.div`
+  width: 64px;
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 8px;
+  transition: all 0.1s;
+  cursor: pointer;
+  &:hover {
+    background-color: #dddddd;
+  }
+`;
+const TitleText = styled.div`
+  font-size: 12px;
+`;
 
+const icons: any = {
+  "/": {
+    selected: HomeSelected,
+    outlined: HomeOutlined,
+  },
+  "/create": {
+    selected: CreateSelected,
+    outlined: CreateOutlined,
+  },
+  "/profile": {
+    selected: ProfileSelected,
+    outlined: ProfileOutlined,
+  },
+  "/search": {
+    selected: SearchSelected,
+    outlined: SearchOutlined,
+  },
+};
+
+const BottomIcon = ({ href, selected }: BottomIconProps) => {
+  const IconComponent = selected ? icons[href].selected : icons[href].outlined;
+
+  return <IconComponent />;
+};
+
+const NavList = ({ title, href }: NavListProps) => {
   const router = useRouter();
+  const selected = router.pathname === href;
 
   return (
     <Container
       onClick={() => {
-        router.push(props.href);
-        props.onClick;
-        Toast({ content: "test", type: "info" });
+        router.push(href);
       }}
     >
-      <span className="material-symbols-rounded">{props.icon}</span>
-      <p>{props.title}</p>
+      <BottomIcon href={href} selected={selected} />
+      <TitleText>{title}</TitleText>
     </Container>
   );
 };
