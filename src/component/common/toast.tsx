@@ -1,10 +1,14 @@
 import styled from "@emotion/styled";
-import { ToastProps } from "types/toast";
+import { ToastOption } from "types/toast";
 import Info from "../../assets/icons/toast/info.svg";
 import Warn from "../../assets/icons/toast/warn.svg";
 
 interface ToastIconProps {
   type?: string;
+}
+interface ToastProps {
+  message: string;
+  option: ToastOption;
 }
 
 const Container = styled.div`
@@ -34,8 +38,8 @@ const ToastIcon = ({ type }: ToastIconProps) => {
   return <IconComponent />;
 };
 
-const Toast = (option: ToastProps) => {
-  const { message, type, time } = option;
+const Toast = ({ message, option }: ToastProps) => {
+  const { type, time } = option;
   return (
     <Container>
       <ToastIcon type={type} />

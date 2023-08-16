@@ -1,7 +1,6 @@
-interface ToastProps {
-  message: string;
+interface ToastOption {
   type?: string;
   time?: number;
 }
 
-export type { ToastProps };
+export type { ToastOption };

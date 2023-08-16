@@ -5,7 +5,7 @@ function SimpleComponent() {
   const { showToast } = useContext(ToastContext);
 
   const handleClick = () => {
-    showToast({ message: "test", type: "info", time: 2 });
+    showToast("test1234");
   };
 
   return (
