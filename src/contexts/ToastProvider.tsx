@@ -1,32 +1,18 @@
-import { createContext, PropsWithChildren, useRef, useState } from "react";
+import React, { createContext, PropsWithChildren } from "react";
 import Toast from "../component/common/Toast";
+import useToast from "src/hooks/useToast";
+import { ToastProps } from "types/toast";
 
-export const ToastContext = createContext({ showToast(message: string) {} });
+export const ToastContext = createContext({
+  showToast(props: ToastProps) {},
+});
 
 export const ToastProvider = ({ children }: PropsWithChildren) => {
-  const [message, setMessage] = useState("");
-  const [isOpenToast, setIsOpenToast] = useState(false);
-  const toastTimer = useRef<NodeJS.Timeout>();
-
-  const showToast = (message: string) => {
-    setIsOpenToast(true);
-    setMessage(message);
-
-    if (toastTimer.current) {
-      clearTimeout(toastTimer.current);
-    }
-
-    const timer = setTimeout(() => {
-      setIsOpenToast(false);
-      setMessage("");
-    }, 3000);
-    toastTimer.current = timer;
-  };
-
+  const { isOpenToast, option, showToast } = useToast();
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {isOpenToast && <Toast message={message} />}
+      {isOpenToast && <Toast {...option} />}
     </ToastContext.Provider>
   );
 };

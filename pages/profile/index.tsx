@@ -1,30 +1,18 @@
-import { useQuery } from "react-query";
-import { css } from "@emotion/react";
-import axios from "axios";
+import { useContext } from "react";
+import { ToastContext } from "src/contexts/ToastProvider";
 
-const profileWrap = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+function SimpleComponent() {
+  const { showToast } = useContext(ToastContext);
 
-const Profile = (props) => {
-  const profilefetcher = async () => {
-    try {
-      const response = await axios.get("url", {
-        //params
-      });
-      return response.data;
-    } catch (error) {}
+  const handleClick = () => {
+    showToast({ message: "test", type: "info", time: 2 });
   };
 
-  const { status, data, error } = useQuery("key", profilefetcher);
+  return (
+    <div>
+      <button onClick={handleClick}>Show Toast!</button>
+    </div>
+  );
+}
 
-  if (status === "loading") {
-    return <span>Loading...</span>;
-  }
-
-  return <div css={profileWrap}> 프로필 페이지 </div>;
-};
-
-export default Profile;
+export default SimpleComponent;

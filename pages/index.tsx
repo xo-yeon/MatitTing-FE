@@ -1,18 +1,7 @@
-import { useContext } from "react";
-import { ToastContext } from "../src/contexts/ToastProvider";
+import type { NextPage } from "next";
 
-function SimpleComponent() {
-  const { showToast } = useContext(ToastContext);
+const Home: NextPage = () => {
+  return <div>홈</div>;
+};
 
-  const handleClick = () => {
-    showToast("토스트가 3초간 띄워집니다.");
-  };
-
-  return (
-    <div>
-      <button onClick={handleClick}>Show Toast!</button>
-    </div>
-  );
-}
-
-export default SimpleComponent;
+export default Home;
