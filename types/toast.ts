@@ -1,5 +1,5 @@
 interface ToastOption {
-  type?: string;
+  type?: "info" | "warn";
   time?: number;
 }
 

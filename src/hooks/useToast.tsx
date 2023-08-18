@@ -1,34 +1,33 @@
 import { useRef, useState } from "react";
 import { ToastOption } from "types/toast";
 
+interface Toast {
+  id: number;
+  message: string;
+  option: ToastOption;
+}
+
 const useToast = () => {
-  const [message, setMessage] = useState<string>("");
-  const [option, setOption] = useState<ToastOption>({});
-  const [isOpenToast, setIsOpenToast] = useState(false);
-  const toastTimer = useRef<NodeJS.Timeout>();
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const toastCounter = useRef(0);
 
-  const showToast = (
-    message: string,
-    option?: ToastOption // Make options parameter optional
-  ) => {
-    const { type = "info", time = 3 } = option || {}; // Set default values if options is not provided
-    setIsOpenToast(true);
-    setMessage(message);
-    setOption({ type, time });
+  const showToast = (message: string, option?: ToastOption) => {
+    const { type = "info", time = 3 } = option || {};
+    const id = toastCounter.current++;
 
-    if (toastTimer.current) {
-      clearTimeout(toastTimer.current);
-    }
+    const newToast = { id, message, option: { type, time } };
+    setToasts((prevToasts) => [...prevToasts, newToast]);
 
-    const timer = setTimeout(() => {
-      setIsOpenToast(false);
-      setMessage("");
-      setOption({});
+    setTimeout(() => {
+      removeToast(id);
     }, time * 1000);
-    toastTimer.current = timer;
   };
 
-  return { isOpenToast, message, option, showToast };
+  const removeToast = (id: number) => {
+    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+  };
+
+  return { toasts, showToast, removeToast };
 };
 
 export default useToast;

@@ -5,4 +5,8 @@ type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
-export type { NextPageWithLayout };
+interface BottomIconProps {
+  selected: boolean;
+}
+
+export type { NextPageWithLayout, BottomIconProps };

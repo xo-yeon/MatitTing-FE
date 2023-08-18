@@ -1,5 +1,9 @@
 import styled from "@emotion/styled";
-import NavList from "./Navlist";
+import NavList from "./navList";
+import CreateIcon from "@assets/icons/bottombar/create";
+import HomeIcon from "@assets/icons/bottombar/home";
+import ProfileIcon from "@assets/icons/bottombar/profile";
+import SearchIcon from "@assets/icons/bottombar/search";
 
 const Container = styled.div`
   width: 768px;
@@ -24,26 +28,30 @@ const navList = [
   {
     title: "홈",
     href: "/",
+    icon: HomeIcon,
   },
   {
     title: "파티 생성",
     href: "/create",
+    icon: CreateIcon,
   },
   {
     title: "검색",
     href: "/search",
+    icon: SearchIcon,
   },
   {
     title: "프로필",
     href: "/profile",
+    icon: ProfileIcon,
   },
 ];
 
 const Bottombar = () => (
   <Container>
     <NavContainer>
-      {navList.map(({ title, href }, index) => (
-        <NavList key={index} title={title} href={href} />
+      {navList.map(({ title, href, icon }) => (
+        <NavList key={href} title={title} href={href} icon={icon} />
       ))}
     </NavContainer>
   </Container>

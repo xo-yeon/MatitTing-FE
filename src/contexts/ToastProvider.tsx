@@ -1,18 +1,40 @@
-import React, { createContext, PropsWithChildren } from "react";
-import Toast from "../component/common/Toast";
+import React, { createContext, PropsWithChildren, useContext } from "react";
+import Toast from "src/component/common/toast";
 import useToast from "src/hooks/useToast";
+import styled from "@emotion/styled";
 import { ToastOption } from "types/toast";
+
+const ToastContainer = styled.div`
+  position: absolute;
+  left: 50%;
+  bottom: 90px;
+  margin-left: -160px;
+
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+`;
 
 export const ToastContext = createContext({
   showToast(message: string, option?: ToastOption) {},
 });
 
 export const ToastProvider = ({ children }: PropsWithChildren) => {
-  const { isOpenToast, message, option, showToast } = useToast();
+  const { toasts, showToast, removeToast } = useToast();
+
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {isOpenToast && <Toast message={message} option={option} />}
+      <ToastContainer>
+        {toasts.slice(0, 3).map((toast) => (
+          <Toast
+            key={toast.id}
+            message={toast.message}
+            option={toast.option}
+            onToastClose={() => removeToast(toast.id)}
+          />
+        ))}
+      </ToastContainer>
     </ToastContext.Provider>
   );
 };
