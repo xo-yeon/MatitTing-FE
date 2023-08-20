@@ -1,13 +1,14 @@
-import "../styles/globals.css";
-import Layout from "@components/common/layout";
-import ModalProvider from "src/contexts/ModalProvider";
-import Modal from "src/components/common/Modal";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { NextPageWithLayout } from "../types/layout";
-import { Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
-import { ToastProvider } from "../src/contexts/ToastProvider";
-import type { AppProps } from "next/app";
+import Layout from '@components/common/layout';
+import { Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
+import type { AppProps } from 'next/app';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { RecoilRoot } from 'recoil';
+import Modal from 'src/components/common/Modal';
+import ModalProvider from 'src/contexts/ModalProvider';
+import { ToastProvider } from '../src/contexts/ToastProvider';
+import '../styles/globals.css';
+import { NextPageWithLayout } from '../types/layout';
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
@@ -26,14 +27,16 @@ function MyApp({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session}>
-        <ModalProvider>
-          <Modal />
-          <ToastProvider>
-            {getLayout(<Component {...pageProps} />)}
-          </ToastProvider>
-        </ModalProvider>
-      </SessionProvider>
+      <RecoilRoot>
+        <SessionProvider session={session}>
+          <ModalProvider>
+            <Modal />
+            <ToastProvider>
+              {getLayout(<Component {...pageProps} />)}
+            </ToastProvider>
+          </ModalProvider>
+        </SessionProvider>
+      </RecoilRoot>
     </QueryClientProvider>
   );
 }
