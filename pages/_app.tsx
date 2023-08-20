@@ -1,8 +1,34 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import "../styles/globals.css";
+import Layout from "../src/component/layout";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { NextPageWithLayout } from "../types/layout";
+import { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
+import { ToastProvider } from "../src/contexts/ToastProvider";
+import type { AppProps } from "next/app";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+  pageProps: {
+    session: Session | null;
+  };
+};
+
+const queryClient = new QueryClient();
+
+function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppPropsWithLayout) {
+  const getLayout = Component.getLayout || ((page) => <Layout>{page}</Layout>);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider session={session}>
+        <ToastProvider>{getLayout(<Component {...pageProps} />)}</ToastProvider>
+      </SessionProvider>
+    </QueryClientProvider>
+  );
 }
 
-export default MyApp
+export default MyApp;
