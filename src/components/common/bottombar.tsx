@@ -1,9 +1,9 @@
-import styled from "@emotion/styled";
-import NavList from "./navList";
-import CreateIcon from "@components/icons/bottombar/create";
-import HomeIcon from "@components/icons/bottombar/home";
-import ProfileIcon from "@components/icons/bottombar/profile";
-import SearchIcon from "@components/icons/bottombar/search";
+import CreateIcon from '@components/icons/bottombar/create';
+import HomeIcon from '@components/icons/bottombar/home';
+import ProfileIcon from '@components/icons/bottombar/profile';
+import SearchIcon from '@components/icons/bottombar/search';
+import styled from '@emotion/styled';
+import NavList from './navList';
 
 const Container = styled.div`
   width: 768px;
@@ -13,6 +13,7 @@ const Container = styled.div`
   position: fixed;
   bottom: 0;
   border-top: 1px solid #dddddd;
+  z-index: 999;
   background-color: white;
 `;
 
@@ -28,23 +29,23 @@ const NavContainer = styled.div`
 
 const navList = [
   {
-    title: "홈",
-    href: "/",
+    title: '홈',
+    href: '/',
     icon: HomeIcon,
   },
   {
-    title: "파티 생성",
-    href: "/create",
+    title: '파티 생성',
+    href: '/create',
     icon: CreateIcon,
   },
   {
-    title: "검색",
-    href: "/search",
+    title: '검색',
+    href: '/search',
     icon: SearchIcon,
   },
   {
-    title: "프로필",
-    href: "/profile",
+    title: '프로필',
+    href: '/profile',
     icon: ProfileIcon,
   },
 ];
