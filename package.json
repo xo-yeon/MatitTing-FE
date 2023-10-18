@@ -25,13 +25,15 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.4",
+    "react-kakao-maps-sdk": "^1.1.21",
     "react-query": "^3.39.3",
-    "react-use": "^17.4.0",
     "sockjs-client": "^1.6.1",
     "react-indiana-drag-scroll": "^2.2.0",
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "@mantine/core": "^7.0.0",
+    "@mantine/hooks": "^7.0.0",
     "@types/node": "20.4.4",
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",
@@ -40,6 +42,7 @@
     "react-use": "^17.4.0",
     "kakao.maps.d.ts": "^0.1.39",
     "recoil": "^0.7.7",
+    "recoil-persist": "^5.1.0",
     "typescript": "5.1.6"
   }
 }

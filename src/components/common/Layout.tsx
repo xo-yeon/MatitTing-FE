@@ -1,4 +1,4 @@
-import Bottombar from "@components/common/bottombar";
+import BottomBar from "./BottomBar";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { ReactNode, useMemo } from "react";
@@ -39,7 +39,7 @@ function Layout({ children }: LayoutProps) {
       <header>{children}</header>
       {isVisibleBottom ? (
         <BottomSection>
-          <Bottombar />
+          <BottomBar />
         </BottomSection>
       ) : null}
     </Container>
