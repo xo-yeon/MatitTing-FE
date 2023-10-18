@@ -4,7 +4,10 @@ import SettingIcon from "@components/icons/common/Setting.icon";
 import BackButton from "@components/common/BackButton";
 import { DefaultHeader } from "@components/common/DefaultHeader";
 import ProfileInfo from "@components/profile/ProfileInfo";
+import { useScroll } from "react-use";
+import { useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const Container = styled.div`
   display: flex;
@@ -12,9 +15,10 @@ const Container = styled.div`
   align-items: center;
   margin: 0 auto;
   padding-top: 45px;
-  min-height: calc(100vh - 80px);
+  height: 100%;
   width: 100%;
   max-width: 768px;
+  overflow-y: scroll;
 `;
 
 const RightAreaContainer = styled.div`
@@ -25,7 +29,20 @@ const RightAreaContainer = styled.div`
   cursor: pointer;
 `;
 
+const BackGroundImgContainer = styled.div<{ scrollY: number }>`
+  display: flex;
+  width: 100%;
+  min-height: 200px;
+  justify-content: center;
+  align-items: center;
+  z-index: 8;
+  transform: ${({ scrollY }) => `translateY(${scrollY * 0.4}px)`};
+`;
+
 const Profile = () => {
+  const scrollRef = useRef(null);
+  const { y } = useScroll(scrollRef);
+
   const rightArea = () => {
     return (
       <Link href={"/setting"}>
@@ -35,8 +52,15 @@ const Profile = () => {
   };
 
   return (
-    <Container>
+    <Container ref={scrollRef}>
       <DefaultHeader leftArea={BackButton()} rightArea={rightArea()} />
+      <BackGroundImgContainer scrollY={y}>
+        <Image
+          src="/images/profile/profilebackground.jpg"
+          layout="fill"
+          objectFit="cover"
+        />
+      </BackGroundImgContainer>
       <ProfileInfo />
       <ProfileTab />
     </Container>

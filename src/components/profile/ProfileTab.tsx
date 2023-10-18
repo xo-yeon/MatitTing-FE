@@ -9,7 +9,7 @@ import { useState, SyntheticEvent } from "react";
 
 const TabContainer = styled.div`
   position: sticky;
-  top: 45px;
+  top: 0;
   background-color: white;
   z-index: 99;
 `;

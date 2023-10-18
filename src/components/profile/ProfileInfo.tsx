@@ -2,7 +2,6 @@ import React from "react";
 import styled from "@emotion/styled";
 import Progressbar from "@components/common/ProgressBar";
 import Image from "next/image";
-import ProfileBackGround from "./ProfileBackGround";
 import LocationIcon from "@components/icons/profile/Location.icon";
 import GenderIcon from "@components/icons/profile/Gender.icon";
 import InfoIcon from "@components/icons/profile/Info.icon";
@@ -76,7 +75,6 @@ const ProfileInfo = () => {
   const { locaton, gender, age, name, mannerdegree } = userdata;
   return (
     <Container>
-      <ProfileBackGround />
       <ProfileDetailContainer>
         <ProfileImgContainer>
           <Image
