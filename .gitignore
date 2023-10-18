@@ -35,3 +35,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+<<<<<<< HEAD
+.prettierrc.json
+=======
+.prettierrc.json
+>>>>>>> 77e2c0ce8158d4181c1611c35c315eb8f1082c41
