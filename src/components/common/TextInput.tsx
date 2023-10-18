@@ -9,6 +9,7 @@ import styled from "@emotion/styled";
 import { shouldNotForwardProp } from "@utils/common";
 
 const Container = styled.div({
+  width: "100%",
   position: "relative",
   width: "100%",
 });
