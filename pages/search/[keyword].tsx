@@ -1,6 +1,5 @@
 import { DefaultHeader } from "@components/common/DefaultHeader";
 import { HeaderBackButton } from "@components/common/HeaderBackButton";
-import BackIcon from "@components/icons/common/close";
 import styled from "@emotion/styled";
 import { useSearchKeyword } from "@hooks/useSearchKeyword";
 import { useRouter } from "next/router";

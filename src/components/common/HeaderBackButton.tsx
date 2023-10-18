@@ -1,4 +1,4 @@
-import BackIcon from "@components/icons/common/close";
+import BackIcon from "@components/icons/common/Back.icon";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
