@@ -32,6 +32,10 @@ const Container = styled.button<ContainerProps>`
 `;
 
 const AuthButton = (props: AuthButtonProps) => {
+  const handleSignIn = () => {
+    signIn(provider);
+  };
+
   const {
     bgColor,
     color,
@@ -44,13 +48,7 @@ const AuthButton = (props: AuthButtonProps) => {
     onunload,
   } = props;
   return (
-    <Container
-      color={color}
-      bgColor={bgColor}
-      onClick={() => {
-        signIn(provider);
-      }}
-    >
+    <Container color={color} bgColor={bgColor} onClick={handleSignIn}>
       <Image src={src} alt={alt} width={width} height={height} />
       {alt}계정으로 {type === "signin" ? "로그인" : "회원가입"}
     </Container>

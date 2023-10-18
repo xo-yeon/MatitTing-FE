@@ -1,4 +1,3 @@
-import * as React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
@@ -6,20 +5,20 @@ import Box from "@mui/material/Box";
 import PartySituation from "./PartySituation";
 import styled from "@emotion/styled";
 import PartyReview from "./PartyReview";
+import { useState, SyntheticEvent } from "react";
+
+const TabContainer = styled.div`
+  position: sticky;
+  top: 45px;
+  background-color: white;
+  z-index: 99;
+`;
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
-
-const TabContainer = styled.div`
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0px;
-  background-color: white;
-  z-index: 99;
-`;
 
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -32,11 +31,7 @@ function CustomTabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box>{children}</Box>}
     </div>
   );
 }
@@ -49,9 +44,9 @@ function a11yProps(index: number) {
 }
 
 export default function ProfileTab() {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 

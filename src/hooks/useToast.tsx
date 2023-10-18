@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { ToastOption } from "types/toast";
 import { useRecoilState } from "recoil";
 import { toastRecoil } from "src/recoil-states/toastRecoil";

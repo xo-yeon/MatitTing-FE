@@ -7,22 +7,17 @@ import GenderType from "@components/profileinput/GenderType";
 import SetBirthday from "@components/profileinput/SetBirthday";
 import SetNickname from "@components/profileinput/SetNickname";
 import { DefaultButton } from "@components/common/DefaultButton";
+import { useRouter } from "next/router";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
-  padding-top: 45px;
   align-items: center;
-`;
-
-const Main = styled.div`
-  display: flex;
-  width: 600px;
-  height: calc(100% - 76px);
-  overflow-y: auto;
-  flex-direction: column;
-  padding-bottom: 40px;
+  margin: 0 auto;
+  padding: 45px;
+  min-height: calc(100vh - 80px);
+  width: 100%;
+  max-width: 768px;
 `;
 
 const HeaderAreaContainer = styled.div`
@@ -51,20 +46,27 @@ const NextButtonContainer = styled.div`
 
 const ProfileInput = () => {
   const [step, setStep] = useState(0);
+  const router = useRouter();
+
+  const forwardStep = () =>
+    step + 1 === signupSteps.length
+      ? registerInfo()
+      : setStep((step: number) => step + 1);
+
+  const backStep = () =>
+    step > 0 ? setStep((step: number) => step - 1) : router.back();
+
+  const registerInfo = () => {
+    //유저정보등록
+  };
 
   const leftArea = () => {
     return (
-      <HeaderAreaContainer
-        onClick={() => {
-          step > 0 && setStep((step: number) => step - 1);
-        }}
-      >
-        {BackIcon()}
-      </HeaderAreaContainer>
+      <HeaderAreaContainer onClick={backStep}>{BackIcon()}</HeaderAreaContainer>
     );
   };
 
-  const signusteps = [
+  const signupSteps = [
     {
       title: "회원님의 성별은 무엇인가요?",
       contents: <GenderType />,
@@ -82,24 +84,20 @@ const ProfileInput = () => {
   return (
     <Container>
       <DefaultHeader leftArea={leftArea()} />
-      <Main>
-        <ProgressbarContainer>
-          <Progressbar value={((step + 1) / signusteps.length) * 100} />
-        </ProgressbarContainer>
-        <StepTitle>{signusteps[step].title}</StepTitle>
-        {signusteps[step].contents}
-        <NextButtonContainer>
-          <DefaultButton
-            text={step + 1 === signusteps.length ? "완료" : "다음"}
-            onClick={() => {
-              if (step + 1 === signusteps.length) {
-              } else {
-                setStep((step: number) => step + 1);
-              }
-            }}
-          />
-        </NextButtonContainer>
-      </Main>
+      <ProgressbarContainer>
+        <Progressbar value={((step + 1) / signupSteps.length) * 100} />
+      </ProgressbarContainer>
+      <StepTitle>{signupSteps[step].title}</StepTitle>
+      {signupSteps[step].contents}
+      <NextButtonContainer>
+        <DefaultButton
+          text={step + 1 === signupSteps.length ? "완료" : "다음"}
+          onClick={forwardStep}
+          style={{
+            width: "100%",
+          }}
+        />
+      </NextButtonContainer>
     </Container>
   );
 };

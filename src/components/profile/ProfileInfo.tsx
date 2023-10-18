@@ -6,8 +6,6 @@ import ProfileBackGround from "./ProfileBackGround";
 import LocationIcon from "@components/icons/profile/Location.icon";
 import GenderIcon from "@components/icons/profile/Gender.icon";
 import InfoIcon from "@components/icons/profile/Info.icon";
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 
 const Container = styled.div`
   display: flex;
@@ -76,50 +74,37 @@ const userdata = {
 
 const ProfileInfo = () => {
   const { locaton, gender, age, name, mannerdegree } = userdata;
-  const { data: session, status } = useSession();
-  const logined = status === "authenticated";
-
-  const router = useRouter();
   return (
     <Container>
       <ProfileBackGround />
       <ProfileDetailContainer>
         <ProfileImgContainer>
           <Image
-            src={session?.user?.image || "/images/profile/profile.png"}
+            src={"/images/profile/profile.png"}
             width={128}
             height={128}
             className="profileimg"
-            onClick={() => {
-              router.push("/signin");
-            }}
           />
         </ProfileImgContainer>
         <ProfileDetail>
-          {logined && (
-            <div className="userinfo">
-              <div className="location">
-                <LocationIcon />
-                <span>{locaton}</span>
-              </div>
-              <div className="gender">
-                <GenderIcon />
-                <span>{gender}</span>
-              </div>
-              <div className="age">
-                <InfoIcon />
-                <span>{age}</span>
-              </div>
+          <div className="userinfo">
+            <div className="location">
+              <LocationIcon />
+              <span>{locaton}</span>
             </div>
-          )}
-          <div className="name">
-            {session?.user?.name || "로그인을 해야합니다."}
+            <div className="gender">
+              <GenderIcon />
+              <span>{gender}</span>
+            </div>
+            <div className="age">
+              <InfoIcon />
+              <span>{age}</span>
+            </div>
           </div>
-          {logined && (
-            <MannerDegreeContainer>
-              <Progressbar value={mannerdegree} /> {mannerdegree}°C
-            </MannerDegreeContainer>
-          )}
+          <div className="name">{name}</div>
+          <MannerDegreeContainer>
+            <Progressbar value={mannerdegree} /> {mannerdegree}°C
+          </MannerDegreeContainer>
         </ProfileDetail>
       </ProfileDetailContainer>
     </Container>

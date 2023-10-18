@@ -12,7 +12,7 @@ const Container = styled.div`
 `;
 
 const GenderType = () => {
-  const [seletedindex, setIndex] = useState(0);
+  const [seletedIndex, setIndex] = useState(0);
 
   const genders = [{ type: "남성" }, { type: "여성" }];
 
@@ -22,9 +22,12 @@ const GenderType = () => {
         <DefaultButton
           key={type}
           text={type}
-          filled={index === seletedindex}
+          filled={index === seletedIndex}
           onClick={() => {
             setIndex(index);
+          }}
+          style={{
+            width: "100%",
           }}
         />
       ))}

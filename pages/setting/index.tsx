@@ -19,7 +19,7 @@ const Profile = () => {
   return (
     <Container>
       <DefaultHeader leftArea={BackButton()} />
-      <SetList></SetList>
+      <SetList />
     </Container>
   );
 };

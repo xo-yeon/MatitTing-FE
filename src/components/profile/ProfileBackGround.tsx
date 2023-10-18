@@ -5,13 +5,10 @@ import Image from "next/image";
 const Container = styled.div`
   display: flex;
   width: 100%;
+  height: 200px;
   justify-content: center;
   align-items: center;
   z-index: 8;
-  .profilebackground {
-    object-fit: cover;
-    object-position: center;
-  }
 `;
 
 const ProfileBackGround = () => {
@@ -39,10 +36,9 @@ const ProfileBackGround = () => {
     <Container style={{ transform: `translateY(${scrollPosition * 0.4}px)` }}>
       <Image
         src="/images/profile/profilebackground.jpg"
-        width="768px"
-        height="200px"
-        className="profilebackground"
-      ></Image>
+        layout="fill"
+        objectFit="cover"
+      />
     </Container>
   );
 };

@@ -8,7 +8,6 @@ interface ToggleButtonProps {
 
 const Container = styled.div`
   display: flex;
-  width: 100%;
   background-color: white;
   padding: 16px;
   flex-direction: row;
@@ -41,11 +40,10 @@ const ToggleButton = ({ partystate, setPartystate }: ToggleButtonProps) => {
           text={text}
           buttonType="toggle"
           filled={partystate === value}
-          customwidth={false}
           onClick={() => {
             setPartystate(value);
           }}
-        ></DefaultButton>
+        />
       ))}
     </Container>
   );

@@ -1,15 +1,17 @@
 import styled from "@emotion/styled";
 import { DefaultHeader } from "@components/common/DefaultHeader";
-import BackIcon from "@components/icons/common/Back.icon";
 import AuthButton from "@components/signin/SigninButton";
-import { useRouter } from "next/router";
+import BackButton from "@components/common/BackButton";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
-  padding-top: 45px;
   align-items: center;
+  margin: 0 auto;
+  padding: 45px;
+  min-height: calc(100vh - 80px);
+  width: 100%;
+  max-width: 768px;
 `;
 
 const AuthButtonList = styled.div`
@@ -44,16 +46,10 @@ const HeaderAreaContainer = styled.div`
 `;
 
 const Profile = () => {
-  const router = useRouter();
-
   const leftArea = () => {
     return (
-      <HeaderAreaContainer
-        onClick={() => {
-          router.back();
-        }}
-      >
-        {BackIcon()}
+      <HeaderAreaContainer>
+        <BackButton />
       </HeaderAreaContainer>
     );
   };

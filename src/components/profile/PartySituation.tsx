@@ -86,16 +86,10 @@ const PartySituation = () => {
 
   return (
     <Container>
-      <ToggleButton
-        partystate={partystate}
-        setPartystate={setPartystate}
-      ></ToggleButton>
+      <ToggleButton partystate={partystate} setPartystate={setPartystate} />
       <PartyListContainer>
         {data?.map((partydata) => (
-          <PartyList
-            key={partydata.categoryId}
-            partydata={partydata}
-          ></PartyList>
+          <PartyList key={partydata.categoryId} partydata={partydata} />
         ))}
       </PartyListContainer>
     </Container>
