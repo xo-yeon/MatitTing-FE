@@ -1,4 +1,4 @@
-import Layout from "@components/common/layout";
+import Layout from "@components/common/Layout";
 import ToastProvider from "@contexts/ToastProvider";
 import { MantineProvider } from "@mantine/core";
 import { Session } from "next-auth";

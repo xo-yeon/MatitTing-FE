@@ -7,7 +7,7 @@ const nextConfig = {
     KAKAO_RESTAPI_KEY: process.env.KAKAO_RESTAPI_KEY,
   },
   images: {
-    domains: ["cdn.pixabay.com"],
+    domains: ["cdn.pixabay.com", "k.kakaocdn.net", "ssl.pstatic.net"],
     minimumCacheTTL: 60,
   },
 };

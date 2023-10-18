@@ -1,24 +1,19 @@
 import styled from "@emotion/styled";
 import { DefaultButton } from "@components/common/DefaultButton";
-import { useState, useEffect } from "react";
 
 interface ToggleButtonProps {
   partystate: string;
   setPartystate: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Container = styled.div<any>`
-  /* position: -webkit-sticky;
-  position: sticky;
-  top: 48px; */
+const Container = styled.div`
   display: flex;
-  width: 100%;
   background-color: white;
   padding: 16px;
   flex-direction: row;
   gap: 10px;
   transition: top 0.3s ease;
-  z-index: 99;
+  z-index: 9;
 `;
 
 const ButtonList = [
@@ -48,7 +43,7 @@ const ToggleButton = ({ partystate, setPartystate }: ToggleButtonProps) => {
           onClick={() => {
             setPartystate(value);
           }}
-        ></DefaultButton>
+        />
       ))}
     </Container>
   );

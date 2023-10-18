@@ -1,19 +1,20 @@
 import React from "react";
+import TextInput from "@components/common/TextInput";
 import styled from "@emotion/styled";
-import SetList from "./setlist";
 
 const Container = styled.div`
   display: flex;
-  width: 100%;
   flex-direction: column;
+  padding-top: 80px;
+  align-items: center;
 `;
 
-const Setting = () => {
+const SetNickname = () => {
   return (
     <Container>
-      <SetList />
+      <TextInput />
     </Container>
   );
 };
 
-export default Setting;
+export default SetNickname;

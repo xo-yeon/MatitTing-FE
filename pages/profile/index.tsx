@@ -1,42 +1,68 @@
 import styled from "@emotion/styled";
-import Header from "@components/profile/header";
-import ProfileTabs from "@components/profile/profiletab";
-import ProfileInfo from "@components/profile/profileinfo";
+import ProfileTab from "@components/profile/ProfileTab";
+import SettingIcon from "@components/icons/common/Setting.icon";
+import BackButton from "@components/common/BackButton";
+import { DefaultHeader } from "@components/common/DefaultHeader";
+import ProfileInfo from "@components/profile/ProfileInfo";
+import { useScroll } from "react-use";
+import { useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  padding-top: 45px;
   height: 100%;
-  div::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-  div::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background-color: #666666;
-  }
-`;
-const Main = styled.div`
-  height: calc(100% - 136px);
-  overflow-y: auto;
+  width: 100%;
+  max-width: 768px;
+  overflow-y: scroll;
 `;
 
-const userdata = {
-  name: "username",
-  locaton: "서울광역시",
-  gender: "남성",
-  age: "20대",
-  mannerdegree: 30,
-};
+const RightAreaContainer = styled.div`
+  display: flex;
+  height: 100%;
+  padding: 0 8px;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const BackGroundImgContainer = styled.div<{ scrollY: number }>`
+  display: flex;
+  width: 100%;
+  min-height: 200px;
+  justify-content: center;
+  align-items: center;
+  z-index: 8;
+  transform: ${({ scrollY }) => `translateY(${scrollY * 0.4}px)`};
+`;
 
 const Profile = () => {
+  const scrollRef = useRef(null);
+  const { y } = useScroll(scrollRef);
+
+  const rightArea = () => {
+    return (
+      <Link href={"/setting"}>
+        <RightAreaContainer>{SettingIcon()}</RightAreaContainer>
+      </Link>
+    );
+  };
+
   return (
-    <Container>
-      <Header />
-      <Main>
-        <ProfileInfo userdata={userdata} />
-        <ProfileTabs></ProfileTabs>
-      </Main>
+    <Container ref={scrollRef}>
+      <DefaultHeader leftArea={BackButton()} rightArea={rightArea()} />
+      <BackGroundImgContainer scrollY={y}>
+        <Image
+          src="/images/profile/profilebackground.jpg"
+          layout="fill"
+          objectFit="cover"
+        />
+      </BackGroundImgContainer>
+      <ProfileInfo />
+      <ProfileTab />
     </Container>
   );
 };

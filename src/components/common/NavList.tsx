@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { BottomIconProps } from "types/layout";
+import Link from "next/link";
 
 interface NavListProps {
   item: {
@@ -25,7 +26,8 @@ const Container = styled.div`
     background-color: #dddddd;
   }
 `;
-const TitleText = styled.div`
+
+const TitleText = styled.span`
   font-size: 12px;
 `;
 
@@ -35,14 +37,12 @@ const NavList = ({ item }: NavListProps) => {
   const selected = router.pathname === href;
 
   return (
-    <Container
-      onClick={() => {
-        router.push(href);
-      }}
-    >
-      {icon({ selected })}
-      <TitleText>{title}</TitleText>
-    </Container>
+    <Link href={href}>
+      <Container>
+        {icon({ selected })}
+        <TitleText>{title}</TitleText>
+      </Container>
+    </Link>
   );
 };
 

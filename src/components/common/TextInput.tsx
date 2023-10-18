@@ -59,9 +59,7 @@ const TextInput = ({
   whiteSpace = true,
   isBorderRadius = false,
 }: InputProps) => {
-  const onChangeHandler = (
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
+  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     if (!whiteSpace) {
       e.target.value = e.target.value.replace(/\s/gi, "");
     }
@@ -83,9 +81,7 @@ const TextInput = ({
         isBorderRadius={isBorderRadius}
         maxLength={maxLength}
       />
-      {errorMessage && (
-        <ErrorText>{errorMessage}</ErrorText>
-      )}
+      {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
     </Container>
   );
 };

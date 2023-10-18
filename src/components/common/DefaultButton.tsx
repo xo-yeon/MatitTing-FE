@@ -18,7 +18,10 @@ interface ButtonProps {
   text: string | React.ReactNode;
 }
 
-const ButtonContainer = styled.button<{ buttonType: string; filled: boolean }>`
+const ButtonContainer = styled.button<{
+  buttonType: string;
+  filled: boolean;
+}>`
   padding: ${(props) => (props.buttonType === "toggle" ? "10px" : "15px")};
   border: none;
   border-radius: 10px;
