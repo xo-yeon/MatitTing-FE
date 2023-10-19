@@ -18,7 +18,7 @@ const Container = styled.div<{ isVisibleBottom: boolean }>`
     height: calc(
       ${(props) => (props.isVisibleBottom ? "100vh - 45px" : "100vh")}
     );
-    padding: 45px 0 0 0;
+    padding: ${(props) => (props.isVisibleBottom ? "20px 0" : "45px 0 0 0")};
     overflow-y: scroll;
   }
 `;

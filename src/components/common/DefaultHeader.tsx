@@ -33,13 +33,20 @@ const Container = styled.div`
   height: 45px;
 `;
 
-const LeftSection = styled.div``;
+const LeftSection = styled.div`
+  display: flex;
+  align-items: center;
+`;
 const CenterSection = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
-const RightSection = styled.div``;
+const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 export const DefaultHeader = ({
   leftArea,
