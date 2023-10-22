@@ -22,8 +22,7 @@ const Wrapper = styled.div`
 `;
 const Container = styled.div`
   display: flex;
-  justify-content: space-between;
-  gap: 15px;
+  justify-content: center; /* 중앙 정렬로 변경 */
   background: ${ColorToken.white};
   width: 100%;
   max-width: 768px;
@@ -31,21 +30,22 @@ const Container = styled.div`
   top: 0;
   z-index: 999;
   height: 45px;
+  padding: 15px;
 `;
 
 const LeftSection = styled.div`
-  display: flex;
-  align-items: center;
+  position: absolute;
+  left: 15px;
 `;
 const CenterSection = styled.div`
-  width: 100%;
-  display: flex;
+  position: absolute;
   justify-content: center;
-  align-items: center;
+  display: flex;
+  width: calc(100% - 85px);
 `;
 const RightSection = styled.div`
-  display: flex;
-  align-items: center;
+  position: absolute;
+  right: 15px;
 `;
 
 export const DefaultHeader = ({

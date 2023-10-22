@@ -8,7 +8,7 @@ import NavList from "./NavList";
 import Link from "next/link";
 
 const Container = styled.div`
-  width: 768px;
+  width: 100%;
   display: flex;
   justify-content: center;
   position: absolute;
@@ -17,13 +17,16 @@ const Container = styled.div`
   border-top: 1px solid #dddddd;
   z-index: 999;
   background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 `;
 
 const NavContainer = styled.div`
-  width: 390px;
+  width: 100%;
+  max-width: 768px;
   height: 75px;
   display: flex;
-  padding: 0px 30px;
+  padding: 0px 15px;
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
@@ -42,7 +45,7 @@ const navList = [
   },
   {
     title: "파티 생성",
-    href: "/create",
+    href: "/party/create",
     icon: CreateIcon,
   },
   {

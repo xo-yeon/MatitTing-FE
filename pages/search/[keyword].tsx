@@ -23,10 +23,9 @@ const Container = styled.div`
     margin-top: -5px;
   }
   #search-input {
-    position: relative;
     width: 100%;
     max-width: 658px;
-    margin-top: -4px;
+    margin-top: -8px;
     input {
       width: 100%;
       height: 30px;

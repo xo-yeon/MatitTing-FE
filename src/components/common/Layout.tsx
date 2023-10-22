@@ -31,7 +31,9 @@ const BottomSection = styled.section`
 function Layout({ children }: LayoutProps) {
   const router = useRouter();
   const isVisibleBottom = useMemo(() => {
-    return router.pathname === ("/" || "/search" || "/profile" || "/create");
+    return ["/", "/search", "/profile", "/party/create", "/chat/list"].includes(
+      router.pathname
+    );
   }, [router.pathname]);
 
   return (
