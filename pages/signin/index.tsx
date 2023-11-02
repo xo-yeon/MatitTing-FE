@@ -37,26 +37,10 @@ const Logo = styled.div`
   font-size: 40px;
 `;
 
-const HeaderAreaContainer = styled.div`
-  display: flex;
-  height: 100%;
-  padding: 0 15px;
-  align-items: center;
-  cursor: pointer;
-`;
-
 const Profile = () => {
-  const leftArea = () => {
-    return (
-      <HeaderAreaContainer>
-        <HeaderBackButton />
-      </HeaderAreaContainer>
-    );
-  };
-
   return (
     <Container>
-      <DefaultHeader leftArea={leftArea()} />
+      <DefaultHeader leftArea={<HeaderBackButton />} />
       <Main>
         <Logo>Maiting</Logo>
         <AuthButtonList>

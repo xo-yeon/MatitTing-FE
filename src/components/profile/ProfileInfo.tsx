@@ -2,6 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import Progressbar from "@components/common/ProgressBar";
 import Image from "next/image";
+import { DefaultText } from "@components/common/DefaultText";
 import LocationIcon from "@components/icons/profile/Location.icon";
 import GenderIcon from "@components/icons/profile/Gender.icon";
 import InfoIcon from "@components/icons/profile/Info.icon";
@@ -18,9 +19,6 @@ const ProfileImgContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  .profileimg {
-    border-radius: 50%;
-  }
 `;
 
 const ProfileDetailContainer = styled.div`
@@ -48,18 +46,14 @@ const ProfileDetail = styled.div`
   padding: 20px;
   gap: 8px;
   .userinfo {
-    color: #4b4b4b;
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 8px;
     margin-bottom: 8px;
   }
   .name {
-    font-size: 32px;
-    margin-bottom: 8px;
-  }
-  span {
-    margin-left: 4px;
+    margin-bottom: 16px;
   }
 `;
 
@@ -81,25 +75,21 @@ const ProfileInfo = () => {
             src={"/images/profile/profile.png"}
             width={128}
             height={128}
-            className="profileimg"
+            style={{ borderRadius: "50%" }}
           />
         </ProfileImgContainer>
         <ProfileDetail>
           <div className="userinfo">
-            <div className="location">
-              <LocationIcon />
-              <span>{locaton}</span>
-            </div>
-            <div className="gender">
-              <GenderIcon />
-              <span>{gender}</span>
-            </div>
-            <div className="age">
-              <InfoIcon />
-              <span>{age}</span>
-            </div>
+            <LocationIcon />
+            <DefaultText text={locaton} size={16} />
+            <GenderIcon />
+            <DefaultText text={gender} size={16} />
+            <InfoIcon />
+            <DefaultText text={age} size={16} />
           </div>
-          <div className="name">{name}</div>
+          <div className="name">
+            <DefaultText text={name} size={32} />
+          </div>
           <MannerDegreeContainer>
             <Progressbar value={mannerdegree} /> {mannerdegree}°C
           </MannerDegreeContainer>

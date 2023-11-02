@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
 
 interface AuthButtonProps {
   bgColor?: string;
@@ -32,9 +31,7 @@ const Container = styled.button<ContainerProps>`
 `;
 
 const AuthButton = (props: AuthButtonProps) => {
-  const handleSignIn = () => {
-    signIn(provider);
-  };
+  const handleSignIn = () => {};
 
   const {
     bgColor,

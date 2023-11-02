@@ -18,11 +18,9 @@ const Container = styled.div`
   padding: 16px;
   border-radius: 16px;
   background-color: ${ColorToken.grey4};
-  .partyimg {
-    object-fit: cover;
-    object-position: center;
-  }
+  cursor: pointer;
 `;
+
 const PartyDetail = styled.div`
   display: flex;
   flex-direction: column;
@@ -69,20 +67,20 @@ const PartyList = ({ partydata }: PartyListProps) => {
         alt="프로필사진"
         width={160}
         height={120}
-        className="partyimg"
+        objectFit="cover"
       />
       <PartyDetail>
         <Title>
           <DefaultText text={partyTitle} size={16}></DefaultText>
         </Title>
         <Detail1>
-          <span className="region">{region}</span>
-          <span className="time">{partyTime}</span>
+          <DefaultText text={region} size={16} />
+          <DefaultText text={partyTime} size={16} />
         </Detail1>
         <Detail2>
-          <span className="people">{totalRecruitment}</span>•
-          <span className="gender">{genderLimit}</span>•
-          <span className="age">{agePreference}</span>
+          <DefaultText text={totalRecruitment} size={16} />•
+          <DefaultText text={genderLimit} size={16} />•
+          <DefaultText text={agePreference} size={16} />
         </Detail2>
       </PartyDetail>
     </Container>

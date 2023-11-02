@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "@emotion/styled";
 import { DefaultHeader } from "@components/common/DefaultHeader";
 import PartyInfo from "@components/partydetail/PartyInfo";
@@ -9,29 +9,9 @@ import Image from "next/image";
 import { useScroll } from "react-use";
 import { useRef } from "react";
 import { useRouter } from "next/router";
-import { useGetPartyDetailMutation } from "@hooks/react-query/useGetPartyDetailMutation";
-
+import { usePartyDetailQuery } from "@hooks/react-query/usePartyDetailQuery";
 export interface PartyDetailDataType {
-  position: {
-    coords: {
-      x: number;
-      y: number;
-    };
-    address?: string;
-  };
-  description: {
-    partyTitle: string;
-    partyContent: string;
-    status: string;
-    gender: string;
-    age: string;
-    deadline: string;
-    partyTime: string;
-    totalParticipate: number;
-    participate: number;
-    thumbnail: string;
-    address?: string;
-  };
+  // 스키마 확정후 추가
 }
 
 const Container = styled.div`
@@ -43,13 +23,6 @@ const Container = styled.div`
   width: 100%;
   max-width: 768px;
   overflow-y: scroll;
-`;
-
-const HeaderAreaContainer = styled.div`
-  display: flex;
-  height: 100%;
-  padding: 0 15px;
-  align-items: center;
 `;
 
 const ButtonContainer = styled.div`
@@ -97,38 +70,17 @@ const PartyDetail = () => {
   const scrollRef = useRef(null);
   const { y } = useScroll(scrollRef);
 
-  const [partyDetailData, setPartyDetailData] = useState<PartyDetailDataType>(
-    initailPartyDetailData
-  );
-  const { mutateAsync: getPartyDetailWithId } = useGetPartyDetailMutation();
-
   const router = useRouter();
   const { id } = router.query;
-
-  const LeftArea = () => {
-    return (
-      <HeaderAreaContainer>
-        <HeaderBackButton />
-      </HeaderAreaContainer>
-    );
-  };
+  const { isLoading, isError, error, data } = usePartyDetailQuery(id as string);
 
   const participateParty = () => {
     // 백엔드 확정후 추가
   };
 
-  useEffect(() => {
-    if (!id) {
-      return;
-    }
-    getPartyDetailWithId({ id: id }).then((data) => {
-      //백엔드 구조 확정 후 추가
-    });
-  }, [id]);
-
   return (
     <Container ref={scrollRef}>
-      <DefaultHeader leftArea={<LeftArea />} />
+      <DefaultHeader leftArea={<HeaderBackButton />} />
       <BackGroundImgContainer scrollY={y}>
         <Image
           src="/images/profile/profilebackground.jpg"
@@ -136,8 +88,8 @@ const PartyDetail = () => {
           objectFit="cover"
         />
       </BackGroundImgContainer>
-      <PartyInfo {...partyDetailData.description} />
-      <PartyMap {...partyDetailData.position} />
+      <PartyInfo {...initailPartyDetailData.description} />
+      <PartyMap {...initailPartyDetailData.position} />
       <ButtonContainer>
         <DefaultButton
           text={"참가신청"}
