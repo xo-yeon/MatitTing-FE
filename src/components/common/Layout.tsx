@@ -36,10 +36,12 @@ function Layout({ children }: LayoutProps) {
     );
   }, [router.pathname]);
 
+  console.log(router.pathname);
+
   return (
     <Container isVisibleBottom={isVisibleBottom}>
       <header>{children}</header>
-      {isVisibleBottom ? (
+      {true ? (
         <BottomSection>
           <BottomBar />
         </BottomSection>
