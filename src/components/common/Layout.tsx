@@ -41,7 +41,7 @@ function Layout({ children }: LayoutProps) {
   return (
     <Container isVisibleBottom={isVisibleBottom}>
       <header>{children}</header>
-      {true ? (
+      {isVisibleBottom ? (
         <BottomSection>
           <BottomBar />
         </BottomSection>
