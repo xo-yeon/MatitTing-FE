@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { DefaultHeader } from "@components/common/DefaultHeader";
 import AuthButton from "@components/signin/SigninButton";
-import BackButton from "@components/common/BackButton";
+import { HeaderBackButton } from "@components/common/HeaderBackButton";
 
 const Container = styled.div`
   display: flex;
@@ -37,26 +37,10 @@ const Logo = styled.div`
   font-size: 40px;
 `;
 
-const HeaderAreaContainer = styled.div`
-  display: flex;
-  height: 100%;
-  padding: 0 15px;
-  align-items: center;
-  cursor: pointer;
-`;
-
 const Profile = () => {
-  const leftArea = () => {
-    return (
-      <HeaderAreaContainer>
-        <BackButton />
-      </HeaderAreaContainer>
-    );
-  };
-
   return (
     <Container>
-      <DefaultHeader leftArea={leftArea()} />
+      <DefaultHeader leftArea={<HeaderBackButton />} />
       <Main>
         <Logo>Maiting</Logo>
         <AuthButtonList>

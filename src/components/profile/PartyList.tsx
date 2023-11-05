@@ -2,9 +2,9 @@ import React from "react";
 import styled from "@emotion/styled";
 import { ColorToken } from "styles/Color";
 import { DefaultText } from "@components/common/DefaultText";
-import useToast from "@hooks/useToast";
 import Image from "next/image";
 import { PartyData } from "types/party";
+import { useRouter } from "next/router";
 
 interface PartyListProps {
   partydata: PartyData;
@@ -18,11 +18,9 @@ const Container = styled.div`
   padding: 16px;
   border-radius: 16px;
   background-color: ${ColorToken.grey4};
-  .partyimg {
-    object-fit: cover;
-    object-position: center;
-  }
+  cursor: pointer;
 `;
+
 const PartyDetail = styled.div`
   display: flex;
   flex-direction: column;
@@ -44,6 +42,7 @@ const Detail2 = styled.div`
 `;
 
 const PartyList = ({ partydata }: PartyListProps) => {
+  const router = useRouter();
   //데이터 구조 추후 변경
   const {
     categoryId = "",
@@ -56,12 +55,11 @@ const PartyList = ({ partydata }: PartyListProps) => {
     partyMessage = "",
     totalRecruitment = "",
   } = partydata;
-  // 토스트 테스트용
-  const { showToast } = useToast();
+
   return (
     <Container
       onClick={() => {
-        showToast(partyTitle);
+        router.push(`/partydetail/${categoryId}`);
       }}
     >
       <Image
@@ -69,20 +67,20 @@ const PartyList = ({ partydata }: PartyListProps) => {
         alt="프로필사진"
         width={160}
         height={120}
-        className="partyimg"
+        objectFit="cover"
       />
       <PartyDetail>
         <Title>
           <DefaultText text={partyTitle} size={16}></DefaultText>
         </Title>
         <Detail1>
-          <span className="region">{region}</span>
-          <span className="time">{partyTime}</span>
+          <DefaultText text={region} size={16} />
+          <DefaultText text={partyTime} size={16} />
         </Detail1>
         <Detail2>
-          <span className="people">{totalRecruitment}</span>•
-          <span className="gender">{genderLimit}</span>•
-          <span className="age">{agePreference}</span>
+          <DefaultText text={totalRecruitment} size={16} />•
+          <DefaultText text={genderLimit} size={16} />•
+          <DefaultText text={agePreference} size={16} />
         </Detail2>
       </PartyDetail>
     </Container>

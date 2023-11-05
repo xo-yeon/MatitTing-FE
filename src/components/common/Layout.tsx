@@ -22,6 +22,7 @@ const Container = styled.div<{ isVisibleBottom: boolean }>`
     overflow-y: scroll;
   }
 `;
+
 const BottomSection = styled.section`
   width: 100%;
   display: flex;
