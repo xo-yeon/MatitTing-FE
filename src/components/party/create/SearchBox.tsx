@@ -29,55 +29,60 @@ const AddressText = styled.div`
   font-size: 14px;
 `;
 
+const Keyword = styled.span`
+  color: orange;
+`;
+
+const NotResult = styled.div`
+  width: 100%;
+  height: 100px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: #bbb;
+`;
 interface SearchBoxProps {
   resultList: kakao.maps.services.PlacesSearchResult | null;
   keyword: string;
-  handleClickPlace: (
-    place: kakao.maps.services.PlacesSearchResultItem
-  ) => void;
+  handleClickPlace: (place: kakao.maps.services.PlacesSearchResultItem) => void;
 }
 
-const SearchBox = ({
-  resultList,
-  keyword,
-  handleClickPlace,
-}: SearchBoxProps) =>
-  resultList && keyword ? (
+const highlightKeyword = (text: string, keyword: string) => {
+  // gi: 소문자, 대문자 구분 없이 키워드 찾기
+  const keywordRegExp = new RegExp(keyword, "gi");
+
+  return keywordRegExp.test(text)
+    ? text
+        .split(keywordRegExp)
+        .map((part, index) =>
+          index % 2 === 0 ? (
+            <span key={part + index}>{part}</span>
+          ) : (
+            <Keyword key={part + index}>{keyword.toLocaleUpperCase()}</Keyword>
+          )
+        )
+    : text;
+};
+
+const SearchBox = ({ resultList, keyword, handleClickPlace }: SearchBoxProps) =>
+  keyword ? (
     <Wrapper id="search-box">
-      {resultList.map((place) => {
-        const {
-          address_name: address,
-          place_name: placeName,
-          id,
-        } = place;
+      {resultList?.length ? (
+        resultList.map((place) => {
+          const { address_name: address, place_name: placeName, id } = place;
 
-        const addressElement = address.replace(
-          new RegExp(keyword, "gi"),
-          `<span style="color: orange;">${keyword}</span>`
-        );
-
-        const placeNameElement = placeName.replace(
-          new RegExp(keyword, "gi"),
-          `<span style="color: orange;">${keyword}</span>`
-        );
-        return (
-          <TextBox
-            key={id}
-            onClick={() => handleClickPlace(place)}
-          >
-            <div
-              dangerouslySetInnerHTML={{
-                __html: placeNameElement.toLowerCase(),
-              }}
-            />
-            <AddressText
-              dangerouslySetInnerHTML={{
-                __html: addressElement.toLowerCase(),
-              }}
-            />
-          </TextBox>
-        );
-      })}
+          return (
+            <TextBox key={id} onClick={() => handleClickPlace(place)}>
+              <div>{highlightKeyword(placeName, keyword)}</div>
+              <AddressText>{highlightKeyword(address, keyword)}</AddressText>
+            </TextBox>
+          );
+        })
+      ) : (
+        <NotResult>검색 결과가 없습니다.</NotResult>
+      )}
     </Wrapper>
   ) : null;
 
