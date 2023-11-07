@@ -29,11 +29,9 @@ function MyApp({
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <MantineProvider>
-          <SessionProvider session={session}>
-            <Modal />
-            {getLayout(<Component {...pageProps} />)}
-            <ToastProvider />
-          </SessionProvider>
+          <Modal />
+          {getLayout(<Component {...pageProps} />)}
+          <ToastProvider />
         </MantineProvider>
       </RecoilRoot>
     </QueryClientProvider>

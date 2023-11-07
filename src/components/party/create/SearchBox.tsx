@@ -67,7 +67,7 @@ const highlightKeyword = (text: string, keyword: string) => {
 };
 
 const SearchBox = ({ resultList, keyword, handleClickPlace }: SearchBoxProps) =>
-  keyword ? (
+  keyword && resultList ? (
     <Wrapper id="search-box">
       {resultList?.length ? (
         resultList.map((place) => {
