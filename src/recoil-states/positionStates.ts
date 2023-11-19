@@ -10,11 +10,6 @@ export interface PositionDataType {
   address?: string;
 }
 
-const { persistAtom } = recoilPersist({
-  key: "currentPostion",
-  storage: sessionStorage,
-});
-
 export const PositionSate = atom<PositionDataType>({
   key: "position",
   default: {
@@ -24,5 +19,4 @@ export const PositionSate = atom<PositionDataType>({
     },
     address: "",
   },
-  effects_UNSTABLE: [persistAtom],
 });

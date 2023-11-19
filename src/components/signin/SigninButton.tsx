@@ -39,14 +39,14 @@ const AuthButton = (props: AuthButtonProps) => {
     src,
     type,
     alt,
-    width = "40px",
-    height = "40px",
+    width = "40",
+    height = "40",
     provider,
     onunload,
   } = props;
   return (
     <Container color={color} bgColor={bgColor} onClick={handleSignIn}>
-      <Image src={src} alt={alt} width={width} height={height} />
+      <Image src={src} alt={alt || ""} width={width} height={height} />
       {alt}계정으로 {type === "signin" ? "로그인" : "회원가입"}
     </Container>
   );

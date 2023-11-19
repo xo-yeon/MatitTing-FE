@@ -59,8 +59,11 @@ const Profile = () => {
       <BackGroundImgContainer scrollY={y}>
         <Image
           src="/images/profile/profilebackground.jpg"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{
+            objectFit: "cover",
+          }}
+          alt={"profile-background"}
         />
       </BackGroundImgContainer>
       <ProfileInfo />

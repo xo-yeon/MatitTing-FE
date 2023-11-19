@@ -76,6 +76,7 @@ const ProfileInfo = () => {
             width={128}
             height={128}
             style={{ borderRadius: "50%" }}
+            alt={"profile-image"}
           />
         </ProfileImgContainer>
         <ProfileDetail>

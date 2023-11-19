@@ -86,16 +86,14 @@ const SettingPositionComponent = ({
         onClick={onClickCurrentPosition}
       />
       <Link href={"/location-setting"}>
-        <a>
-          <DefaultText
-            text="지도에서 위치 지정"
-            size={15}
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={onClickMapPosition}
-          />
-        </a>
+        <DefaultText
+          text="지도에서 위치 지정"
+          size={15}
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={onClickMapPosition}
+        />
       </Link>
     </PositionTextContainer>
   );
@@ -105,19 +103,15 @@ const HeaderRightArea = () => {
   return (
     <HeaderAreaContainer>
       <Link href={"/search"}>
-        <a>
-          <SearchIcon />
-        </a>
+        <SearchIcon />
       </Link>
       <Link href={"/notification"}>
-        <a>
-          <NotificationIcon
-            notificationCount={0}
-            styles={{
-              marginTop: "-5px",
-            }}
-          />
-        </a>
+        <NotificationIcon
+          notificationCount={0}
+          styles={{
+            marginTop: "-5px",
+          }}
+        />
       </Link>
     </HeaderAreaContainer>
   );
