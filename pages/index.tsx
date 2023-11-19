@@ -9,11 +9,11 @@ import { BottomUpPopup } from "@components/popup/BottomUpPopup";
 import styled from "@emotion/styled";
 import useToast from "@hooks/useToast";
 import { Transition } from "@mantine/core";
+import { useMutation } from "@tanstack/react-query";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useMutation } from "react-query";
 import { useRecoilState } from "recoil";
 import getLocationAddress from "src/api/getLocationAddress";
 import {

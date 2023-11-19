@@ -1,6 +1,4 @@
 import variableAssignMent from "@utils/variableAssignment";
-import axios from "axios";
-import { useMutation } from "react-query";
 import kakaoRequset from "src/lib/axios/kakaoRequest";
 import { LocationAddressResponse } from "types/search/location/LocationAddressResponse";
 

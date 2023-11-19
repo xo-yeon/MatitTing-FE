@@ -1,6 +1,4 @@
 import variableAssignMent from "@utils/variableAssignment";
-import axios, { AxiosError } from "axios";
-import { useQuery, UseQueryResult } from "react-query";
 import defaultRequest from "src/lib/axios/defaultRequest";
 import { PartyDetailResponse } from "types/party/detail/PartyDetailResponse";
 
