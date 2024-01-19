@@ -1,10 +1,19 @@
 import styled from "@emotion/styled";
 import TextInput from "@components/common/TextInput";
-import CheckBox from "./CheckBox";
 import { useRouter } from "next/router";
 import Thumbnail from "./Thumbnail";
-import { ReactNode } from "react";
-import { PARTY_GENDER_LABEL, PARTY_AGE_LABEL } from "src/constants/checkbox";
+import { ChangeEvent, PropsWithChildren } from "react";
+import { UseFormGetValues, UseFormRegister } from "react-hook-form";
+
+import { PartyForm } from "@pages/party/create";
+import SelectContent from "./SelectContent";
+import {
+  PARTY_AGE_LABEL,
+  PARTY_CATEGORY_LABEL,
+  PARTY_GENDER_LABEL,
+  PARTY_STATUS_LABEL,
+  PARTY_TOTAL_LABEL,
+} from "src/constants/options";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -37,16 +46,18 @@ const Label = styled.h5`
   min-width: 80px;
 `;
 
-const Select = styled.select`
-  width: 200px;
-  padding: 5px;
-`;
-
 interface CreateProps {
-  children: ReactNode;
+  register: UseFormRegister<PartyForm>;
+  onChangeThumbnail: (e: ChangeEvent<HTMLInputElement>) => void;
+  getValues: UseFormGetValues<PartyForm>;
 }
 
-const Create = ({ children }: CreateProps) => {
+const Create = ({
+  children,
+  register,
+  getValues,
+  onChangeThumbnail,
+}: PropsWithChildren<CreateProps>) => {
   const { query: partyId } = useRouter();
 
   return (
@@ -56,50 +67,50 @@ const Create = ({ children }: CreateProps) => {
         placeholder="제목"
         isBorderRadius={false}
         maxLength={20}
+        register={{ ...register("title") }}
       />
       <TextArea
         maxLength={100}
-        name="descripton"
         placeholder="내용을 입력하세요."
         rows={5}
+        {...register("content")}
       />
       {children}
-      <Thumbnail />
-      <CheckBox title="성별(선택)" contents={PARTY_GENDER_LABEL} />
-      <CheckBox title="연령(선택)" contents={PARTY_AGE_LABEL} />
-      <Contents>
-        <Label>종류</Label>
-        <Select name="category">
-          <option value="한식">한식</option>
-          <option value="양식">양식</option>
-          <option value="일식">일식</option>
-          <option value="중식">중식</option>
-          <option value="기타">기타</option>
-        </Select>
-      </Contents>
-      <Contents>
-        <Label>모집원</Label>
-        <Select name="maxMember">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-        </Select>
-      </Contents>
+      <Thumbnail onChangeThumbnail={onChangeThumbnail} getValues={getValues} />
+      <SelectContent
+        label="성별"
+        register={{ ...register("gender") }}
+        options={PARTY_GENDER_LABEL}
+      />
+      <SelectContent
+        label="연령"
+        register={{ ...register("age") }}
+        options={PARTY_AGE_LABEL}
+      />
+      <SelectContent
+        label="종류"
+        register={{ ...register("category") }}
+        options={PARTY_CATEGORY_LABEL}
+      />
+      <SelectContent
+        label="모집원"
+        register={{ ...register("totalParticipant") }}
+        options={PARTY_TOTAL_LABEL}
+      />
       <Contents>
         <Label>모집일</Label>
-        <input type="date" name="date" />
+        <input
+          type="date"
+          {...register("partyTime")}
+          defaultValue={new Date().toISOString().substring(0, 10)}
+        />
       </Contents>
       {partyId ? (
-        <Contents>
-          <Label>모집 상태</Label>
-          <Select name="maxMember">
-            <option value="모집중">모집중</option>
-            <option value="모집 중단">모집 중단</option>
-          </Select>
-        </Contents>
+        <SelectContent
+          label="모집 상태"
+          register={{ ...register("status") }}
+          options={PARTY_STATUS_LABEL}
+        />
       ) : null}
     </Wrapper>
   );
