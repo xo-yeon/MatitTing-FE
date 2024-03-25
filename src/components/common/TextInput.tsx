@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { shouldNotForwardProp } from "@utils/common";
 import { ChangeEvent, InputHTMLAttributes, forwardRef } from "react";
 import { ColorToken } from "styles/Color";
 
@@ -26,6 +25,7 @@ const Input = styled.input<InputStyleProps>`
   }
 `;
 
+
 const ErrorText = styled.p`
   color: red;
   margin-top: 10px;
@@ -39,6 +39,7 @@ interface TextInputProps extends InputProps {
   isBorderRadius?: boolean;
   errorMessage?: string;
 }
+
 
 const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   ({ whiteSpace, isBorderRadius, errorMessage, ...rest }, ref) => {
@@ -64,6 +65,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     );
   }
 );
+
 
 TextInput.displayName = "TextInput";
 

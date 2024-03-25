@@ -1,4 +1,5 @@
 import { ChangeEvent, useCallback, useState } from "react";
+import { Marker, Place } from "types/map";
 
 const useSearchPlace = () => {
   const [marker, setMarker] = useState<Marker | null>(null);
@@ -13,26 +14,35 @@ const useSearchPlace = () => {
     setResultList(null);
   };
 
-  const handleClickPlace = useCallback(
-    (place: kakao.maps.services.PlacesSearchResultItem) => {
+  const setPlace = useCallback(
+    ({ lat, lng, placeName }: Place) => {
       if (!map) return;
       const bounds = new kakao.maps.LatLngBounds();
-
-      bounds.extend(new kakao.maps.LatLng(Number(place.y), Number(place.x)));
-
-      setKeyword(place.place_name);
-      setResultList(null);
+      bounds.extend(new kakao.maps.LatLng(lat, lng));
       setMarker({
         position: {
-          lat: Number(place.y),
-          lng: Number(place.x),
+          lat: lat,
+          lng: lng,
         },
-        content: place.place_name,
+        content: placeName,
       });
 
       map.setBounds(bounds);
     },
     [map]
+  );
+
+  const handleClickPlace = useCallback(
+    ({
+      x: lat,
+      y: lng,
+      place_name: placeName,
+    }: kakao.maps.services.PlacesSearchResultItem) => {
+      setKeyword(placeName);
+      setResultList(null);
+      setPlace({ lat: Number(lat), lng: Number(lng), placeName });
+    },
+    [setPlace]
   );
 
   const handleChangeSearchBox = useCallback(
@@ -74,6 +84,7 @@ const useSearchPlace = () => {
     setResultList,
     keyword,
     setKeyword,
+    setPlace,
     reset,
     handleChangeSearchBox,
     handleClickPlace,

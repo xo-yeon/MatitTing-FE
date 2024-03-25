@@ -1,21 +1,15 @@
 import { Dispatch, ReactNode, SetStateAction } from "react";
 import { Map } from "react-kakao-maps-sdk";
+import { MapCoordinatet } from "types/map";
 
 interface KakaoMapProps {
   center: MapCoordinatet;
   children?: ReactNode;
   zoom?: number;
-  onCreate?: Dispatch<
-    SetStateAction<kakao.maps.Map | undefined>
-  >;
+  onCreate?: Dispatch<SetStateAction<kakao.maps.Map | undefined>>;
 }
 
-const KakaoMap = ({
-  center,
-  zoom = 3,
-  children,
-  onCreate,
-}: KakaoMapProps) => {
+const KakaoMap = ({ center, zoom = 3, children, onCreate }: KakaoMapProps) => {
   return (
     <Map
       center={center}

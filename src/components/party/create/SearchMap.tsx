@@ -5,6 +5,7 @@ import { MapMarker } from "react-kakao-maps-sdk";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import SearchBox from "./SearchBox";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { Marker } from "types/map";
 
 const SearchWrapper = styled.div`
   display: flex;
@@ -24,6 +25,8 @@ const MapWrapper = styled.div`
 const MarkerText = styled.div`
   padding: 3px 5px;
 `;
+
+type Place = { lat: number; lng: number; placeName: string };
 
 interface SearchMapProps {
   marker: Marker | null;
