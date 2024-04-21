@@ -1,79 +1,108 @@
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
-import PartySituation from "./PartySituation";
-import styled from "@emotion/styled";
-import PartyRequestList from "./PartyRequestList";
-import { useState, SyntheticEvent } from "react";
-import { useRouter } from "next/router";
-import ProfileTabPanel from "./ProfileTabPanel";
+import styled from '@emotion/styled';
+import { useRouter } from 'next/router';
+import { useMemo } from 'react';
+import { useSearchParam } from 'react-use';
+import PartySituation from './PartySituation';
+import TabComponent from './TabComponent';
+import PartyRequest from './PartyRequest';
+import ReviewList from './ProfileReviewList';
+import ProfileReviewList from './ProfileReviewList';
 
-const TabContainer = styled.div`
-  position: sticky;
-  top: 0;
-  background-color: white;
-  z-index: 99;
+interface CategoryItemType {
+    id: CategoryIdType;
+    label: CategoryLabelType;
+}
+
+export type CategoryIdType = 'situation' | 'request' | 'review';
+export type CategoryLabelType = '파티현황' | '초대요청' | '후기';
+
+const TabContainer = styled.div<{ selectedTabIndex: number }>`
+    display: flex;
+    position: relative;
+    border-bottom: 1px solid #ebebeb;
+    &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: ${({ selectedTabIndex }) =>
+            selectedTabIndex * 100}px; /* 임시 값, 실제로는 계산해야 함 */
+        width: 100px; /* 임시 값, 실제로는 계산해야 함 */
+        height: 2px;
+        background-color: #1976d2;
+        transition:
+            left 0.3s ease-in-out,
+            width 0.3s ease-in-out;
+    }
+`;
+
+const Wrapper = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 `;
 
 const a11yProps = (index: number) => {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
 };
 
-const categorylist = [
-  { id: "partysituation", label: "파티현황", component: <PartySituation /> },
-  { id: "partyrequest", label: "초대요청", component: <PartyRequestList /> },
+const categoryList: CategoryItemType[] = [
+    { id: 'situation', label: '파티현황' },
+    { id: 'request', label: '초대요청' },
+    { id: 'review', label: '후기' },
 ];
 
-export default function ProfileTab() {
-  const router = useRouter();
-  const category = router.query.category as string;
-
-  if (!category) {
-    return null;
-  }
-
-  const currentTab = categorylist.findIndex((item) => item.id === category);
-  const [value, setValue] = useState(currentTab);
-
-  const handleChange = (_: SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
-  return (
-    <Box sx={{ width: "100%" }}>
-      <TabContainer>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-          >
-            {categorylist.map(({ id, label }, index) => (
-              <Tab
-                key={id}
-                label={label}
-                {...a11yProps(index)}
-                onClick={() => {
-                  router.push({
-                    query: {
-                      ...router.query,
-                      category: id,
-                    },
-                  });
-                }}
-              />
-            ))}
-          </Tabs>
-        </Box>
-      </TabContainer>
-      {categorylist.map(({ id, component }, index) => (
-        <ProfileTabPanel key={id} value={value} index={index}>
-          {component}
-        </ProfileTabPanel>
-      ))}
-    </Box>
-  );
+function isValidCategoryLabelType(value: unknown): value is CategoryIdType {
+    return value === 'situation' || value === 'request' || value === 'review';
 }
+
+const ProfileTab = () => {
+    const { replace } = useRouter();
+    const category = useSearchParam('category');
+    const selectedId = useMemo(() => {
+        if (!category || !isValidCategoryLabelType(category)) {
+            return;
+        }
+        return category;
+    }, [category]);
+
+    const selectedTabIndex = useMemo(() => {
+        return categoryList.findIndex((category) => category.id === selectedId);
+    }, [selectedId]);
+
+    const handleTabClick = (id: CategoryIdType) => {
+        if (id === 'review') {
+            replace({ query: { category: id, role: 'SENDER' } });
+            return;
+        }
+        replace({ query: { category: id, role: 'HOST' } });
+    };
+
+    return (
+        <Wrapper>
+            <TabContainer selectedTabIndex={selectedTabIndex}>
+                {categoryList.map((category) => {
+                    const onClick = () => {
+                        handleTabClick(category.id);
+                    };
+                    return (
+                        <TabComponent
+                            onClick={onClick}
+                            label={category.label}
+                            key={category.id}
+                            isSelected={selectedId === String(category.id)}
+                        />
+                    );
+                })}
+            </TabContainer>
+            {selectedId === 'situation' && <PartySituation />}
+            {selectedId === 'request' && <PartyRequest />}
+            {selectedId === 'review' && <ProfileReviewList />}
+        </Wrapper>
+    );
+};
+
+export default ProfileTab;
