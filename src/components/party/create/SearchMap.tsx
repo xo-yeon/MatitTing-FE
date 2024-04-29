@@ -4,7 +4,7 @@ import KakaoMap from "@components/common/Map";
 import { MapMarker } from "react-kakao-maps-sdk";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import SearchBox from "./SearchBox";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
 import { Marker } from "types/map";
 
 const SearchWrapper = styled.div`
@@ -26,11 +26,8 @@ const MarkerText = styled.div`
   padding: 3px 5px;
 `;
 
-type Place = { lat: number; lng: number; placeName: string };
-
 interface SearchMapProps {
   marker: Marker | null;
-  setMap: Dispatch<SetStateAction<kakao.maps.Map | undefined>>;
   resultList: kakao.maps.services.PlacesSearchResult | null;
   keyword: string;
   reset: () => void;
@@ -40,49 +37,55 @@ interface SearchMapProps {
 
 const SearchMap = ({
   marker,
-  setMap,
   keyword,
   resultList,
   reset,
   handleChangeSearchBox,
   handleClickPlace,
-}: SearchMapProps) => {
-  return (
-    <>
-      <SearchWrapper>
-        <TextInput
-          placeholder="장소 이름이나 주소를 검색해주세요."
-          maxLength={20}
-          value={keyword}
-          name="search"
-          onChange={handleChangeSearchBox}
-        />
-        <div onClick={reset}>
-          <HighlightOffIcon style={{ fill: "#bbb", fontSize: "20px" }} />
-        </div>
-      </SearchWrapper>
-      <MapWrapper>
-        <SearchBox
-          resultList={resultList}
-          keyword={keyword}
-          handleClickPlace={handleClickPlace}
-        />
+}: SearchMapProps) => (
+  <>
+    <SearchWrapper>
+      <TextInput
+        placeholder="장소 이름이나 주소를 검색해주세요."
+        maxLength={20}
+        value={keyword}
+        name="search"
+        onChange={handleChangeSearchBox}
+      />
+      <div onClick={reset}>
+        <HighlightOffIcon style={{ fill: "#bbb", fontSize: "20px" }} />
+      </div>
+    </SearchWrapper>
+    <MapWrapper>
+      <SearchBox
+        resultList={resultList}
+        keyword={keyword}
+        handleClickPlace={handleClickPlace}
+      />
+      {marker ? (
         <KakaoMap
-          center={{ lat: 33.450701, lng: 126.570667 }} //현재 위치 가져와서 세팅하기 또는 시청 좌표
-          onCreate={setMap}
+          center={{
+            lat: marker?.position.lat,
+            lng: marker?.position.lng,
+          }}
         >
-          {marker ? (
-            <MapMarker
-              key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-              position={marker.position}
-            >
-              <MarkerText>{marker.content}</MarkerText>
-            </MapMarker>
-          ) : null}
+          <MapMarker
+            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+            position={marker.position}
+          >
+            <MarkerText>{marker.content}</MarkerText>
+          </MapMarker>
         </KakaoMap>
-      </MapWrapper>
-    </>
-  );
-};
+      ) : (
+        <KakaoMap
+          center={{
+            lng: 126.570667,
+            lat: 33.450701,
+          }}
+        />
+      )}
+    </MapWrapper>
+  </>
+);
 
 export default SearchMap;

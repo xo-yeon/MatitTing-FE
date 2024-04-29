@@ -3,7 +3,6 @@ import { Marker, Place } from "types/map";
 
 const useSearchPlace = () => {
   const [marker, setMarker] = useState<Marker | null>(null);
-  const [map, setMap] = useState<kakao.maps.Map>();
   const [keyword, setKeyword] = useState("");
   const [resultList, setResultList] =
     useState<kakao.maps.services.PlacesSearchResult | null>(null);
@@ -15,31 +14,25 @@ const useSearchPlace = () => {
   };
 
   const setPlace = useCallback(
-    ({ lat, lng, placeName }: Place) => {
-      if (!map) return;
-      const bounds = new kakao.maps.LatLngBounds();
-      bounds.extend(new kakao.maps.LatLng(lat, lng));
+    ({ lat, lng, placeName }: Place) =>
       setMarker({
         position: {
           lat: lat,
           lng: lng,
         },
         content: placeName,
-      });
-
-      map.setBounds(bounds);
-    },
-    [map]
+      }),
+    []
   );
 
   const handleClickPlace = useCallback(
     ({
-      x: lat,
-      y: lng,
+      x: lng,
+      y: lat,
       place_name: placeName,
     }: kakao.maps.services.PlacesSearchResultItem) => {
-      setKeyword(placeName);
       setResultList(null);
+      setKeyword(placeName);
       setPlace({ lat: Number(lat), lng: Number(lng), placeName });
     },
     [setPlace]
@@ -47,7 +40,6 @@ const useSearchPlace = () => {
 
   const handleChangeSearchBox = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      if (!map) return;
       const places = new kakao.maps.services.Places();
 
       setKeyword(e.target.value);
@@ -72,14 +64,12 @@ const useSearchPlace = () => {
         }
       );
     },
-    [map]
+    []
   );
 
   return {
     marker,
     setMarker,
-    map,
-    setMap,
     resultList,
     setResultList,
     keyword,
