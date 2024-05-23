@@ -1,48 +1,60 @@
-import { ChangeEvent, MouseEvent, ReactElement } from "react";
-import TextInput from "@components/common/TextInput";
-import styled from "@emotion/styled";
+import { ChangeEvent, MouseEvent, ReactElement } from 'react';
+import TextInput from '@components/common/TextInput';
+import styled from '@emotion/styled';
+import { UseFormRegister } from 'react-hook-form';
 
-const Wrapper = styled.div({
-  display: "flex",
-  justifyContent: "space-between",
-  gap: "10px",
-  padding: "1rem 2rem",
-  backgroundColor: "#ddd",
+const Wrapper = styled.form`
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 1rem 2rem;
+    background-color: #ddd;
 
-  "& input": {
-    height: "50px",
-  },
-});
+    input: {
+        height: 50px;
+    }
+`;
 
-const ImageUploadButton = styled.label({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  width: "50px",
-  border: "none",
-  borderRadius: "10px",
-  backgroundColor: "#efebec",
-  cursor: "pointer",
-});
+const ImageUploadButton = styled.label`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #efebec;
+    cursor: pointer;
+`;
 
-const SubmitButton = styled.button({
-  width: "50px",
-  border: "none",
-  borderRadius: "10px",
-  backgroundColor: "#efebec",
-});
+const SubmitButton = styled.button`
+    width: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #efebec;
+`;
 
-const BottomInputGroup = () => {
-  const handleClickSubmit = (e: MouseEvent<HTMLButtonElement>) => {};
+interface BottomInputGroupProps {
+    handleClickSubmit: (e: MouseEvent<HTMLButtonElement>) => Promise<void>;
+    register: UseFormRegister<any>;
+}
 
-  const handleChangeImageFile = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-  };
+const BottomInputGroup = ({ register, handleClickSubmit }: BottomInputGroupProps) => {
+    // const handleClickSubmit = (e: MouseEvent<HTMLButtonElement>) => {};
 
-  return (
-    <Wrapper>
-      <TextInput placeholder="message" />
-      <ImageUploadButton aria-label="upload picture" htmlFor="add_image">
+    const handleChangeImageFile = (e: ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+    };
+
+    return (
+        <Wrapper>
+            <TextInput
+                placeholder="message"
+                isBorderRadius={false}
+                maxLength={20}
+                {...register('message')}
+            />
+            <form id="form"></form>
+            {/* <ImageUploadButton aria-label="upload picture" htmlFor="add_image">
         +
       </ImageUploadButton>
       <input
@@ -51,14 +63,16 @@ const BottomInputGroup = () => {
         type="file"
         accept=".jpeg,.png"
         onChange={handleChangeImageFile}
-      />
-      <SubmitButton onClick={handleClickSubmit}>전송</SubmitButton>
-    </Wrapper>
-  );
+      /> */}
+            <SubmitButton type="submit" onClick={handleClickSubmit}>
+                전송
+            </SubmitButton>
+        </Wrapper>
+    );
 };
 
 BottomInputGroup.getLayout = (page: ReactElement) => {
-  return <>{page}</>;
+    return <>{page}</>;
 };
 
 export default BottomInputGroup;

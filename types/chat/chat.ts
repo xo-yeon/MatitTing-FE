@@ -1,15 +1,16 @@
 export interface ChatMessageResponse {
-    responseChatDtoList: {
-        chatId: number;
-        senderId: number;
-        nickname: string;
-        message: string;
-        createAt: string;
-
-        userNickname: string;
-    }[];
+    responseChatDtoList: ChatMessagesType[];
     pageInfo: {
-        lastPartyId: number;
+        page: number;
         hasNext: boolean;
     };
 }
+
+export type ChatMessagesType = {
+    chatId: string;
+    createAt: string;
+    imgUrl: string;
+    message: string;
+    nickname: string;
+    senderId: number;
+};

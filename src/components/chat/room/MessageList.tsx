@@ -1,84 +1,70 @@
 import styled from '@emotion/styled';
 import { ReactElement } from 'react';
-import { shouldNotForwardProp } from '@utils/common';
-import { ChatMessagesType } from './ChatRoom';
 import { displayTime } from '../list/ChatRoomList';
+import { ChatMessagesType } from 'types/chat/chat';
 
-const List = styled.ul({
-    padding: '0 2rem',
-    margin: '0 auto',
-    listStyle: 'none',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-});
+const List = styled.ul`
+    padding: 0 2rem;
+    margin: 0 auto;
+    list-style: none;
+    width: 100%;
+    height: calc(100vh - 119px);
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: auto;
+`;
 
-const ListItem = styled(
-    'li',
-    shouldNotForwardProp('userCheck'),
-)<{ userCheck?: string }>(({ userCheck }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: userCheck === 'me' ? 'row-reverse' : 'row',
-    margin: '1rem 0',
-}));
+const ListItem = styled.li<{ userCheck?: string }>`
+    display: flex;
+    align-items: center;
+    flex-direction: ${(props) => (props.userCheck === 'me' ? 'row-reverse' : 'row')};
+    margin: 1rem 0;
+`;
 
-const ImageBox = styled.div({
-    width: '50px',
-    height: '50px',
-    borderRadius: '50%',
-    overflow: 'hidden',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: '20px',
-});
+const ImageBox = styled.div`
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+`;
 
-const MessageBox = styled(
-    'div',
-    shouldNotForwardProp('userCheck'),
-)<{ userCheck?: string }>(({ userCheck }) => ({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1rem',
-    backgroundColor: userCheck === 'me' ? '#efebec' : '#efebec',
-    borderRadius: '10px',
-}));
+const MessageBox = styled.div<{ userCheck?: string }>`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: ${(props) => (props.userCheck === 'me' ? '#efebec' : '#efebec')};
+    border-radius: 10px;
+`;
 
-const TextBox = styled.div({
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-});
+const TextBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+`;
 
-const NickName = styled(
-    'p',
-    shouldNotForwardProp('userCheck'),
-)<{ userCheck?: string }>(({ userCheck }) => ({
-    marginTop: 0,
-    marginBottom: userCheck === 'me' ? 0 : '10px',
-    fontSize: '18px',
-    fontWeight: 'bold',
-}));
+const NickName = styled.p<{ userCheck?: string }>`
+    margin-top: 0;
+    margin-bottom: ${(props) => (props.userCheck === 'me' ? 0 : '10px')};
+    font-size: 18px;
+    font-weight: bold;
+`;
 
-const Message = styled(
-    'p',
-    shouldNotForwardProp('userCheck'),
-)<{ userCheck?: string }>(({ userCheck }) => ({
-    margin: 0,
-    color: userCheck === 'me' ? '#fff' : '#000',
-}));
+const Message = styled.p<{ userCheck?: string }>`
+    margin: 0;
+    color: ${(props) => (props.userCheck === 'me' ? '#fff' : '#000')};
+`;
 
-const ReadMark = styled(
-    'div',
-    shouldNotForwardProp('userCheck'),
-)<{ userCheck?: string }>(({ userCheck }) => ({
-    marginLeft: userCheck === 'me' ? '15px' : '0px',
-    marginRight: userCheck === 'me' ? '0px' : '15px',
-    alignSelf: 'flex-end',
-    color: 'rosybrown',
-}));
+const ReadMark = styled.div<{ userCheck?: string }>`
+    margin-left: ${(props) => (props.userCheck === 'me' ? '15px' : '0px')};
+    margin-right: ${(props) => (props.userCheck === 'me' ? ' 0px' : '15px')};
+    align-self: flex-end;
+    color: rosybrown;
+`;
 
 const NotMessage = styled.div`
     margin: 2rem auto;
@@ -101,7 +87,7 @@ const MessageList = ({ messages }: MessageListProps) => {
                                 <Message>{message}</Message>
                             </TextBox>
                         </MessageBox>
-                        <ReadMark>{createAt ? displayTime(createAt) : ''}</ReadMark>
+                        <ReadMark>{createAt ? displayTime(String(createAt)) : ''}</ReadMark>
                     </ListItem>
                 ) : (
                     <NotMessage>{message}</NotMessage>

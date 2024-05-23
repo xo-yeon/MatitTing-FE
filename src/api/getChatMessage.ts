@@ -1,28 +1,27 @@
-import variableAssignMent from '@utils/variableAssignment';
 import defaultRequest from 'src/lib/axios/defaultRequest';
-import { ChatMessageResponse } from 'types/chat/chat';
+import { ChatMessageResponse, ChatMessagesType } from 'types/chat/chat';
+
+type InfinitePaginationDataType<K extends string, T> = {
+    [key in K]: T[];
+} & {
+    pageInfo: {
+        page: number;
+        hasNext: boolean;
+    };
+};
 
 interface ChatMessageParams {
     roomId: string;
-    size: string;
-    lastChatId: string;
+    page: number;
 }
 
-export const API_GET_CHAT_MESSAGE_KEY =
-    '/api/chat/{{roomId}}?size={{size}}&lastChatId={{lastChatId}}';
+export const API_GET_CHAT_MESSAGE_KEY = '/api/chat/{{roomId}}?page={{page}}';
 
-const getChatMessage = async ({
-    roomId,
-    size,
-    lastChatId,
-}: ChatMessageParams): Promise<ChatMessageResponse> => {
-    const { data } = await defaultRequest.get(
-        variableAssignMent(API_GET_CHAT_MESSAGE_KEY, {
-            size,
-            lastChatId,
-            roomId,
-        }),
-    );
+const getChatMessage = async ({ roomId, page }: ChatMessageParams) => {
+    const { data } = await defaultRequest.get<
+        InfinitePaginationDataType<'responseChatDtoList', ChatMessagesType>
+    >(`/api/chat/${roomId}`, { params: { page, size: 5 } });
+
     return data;
 };
 

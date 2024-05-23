@@ -2,12 +2,12 @@ import styled from '@emotion/styled';
 import { ReactElement } from 'react';
 import router from 'next/router';
 import Image from 'next/image';
-import { ChatUserListResponse } from 'types/chat/chatRooms';
+import { ChatUserResponse } from 'types/chat/chatRooms';
 import deletePartyUser from 'src/api/deleteChatUser';
 
 interface PartyUserListProps {
     isOpenUserList: boolean;
-    userList: ChatUserListResponse[];
+    chatUser: ChatUserResponse;
 }
 
 const Wrapper = styled.div<{ isOpenUserList: boolean }>`
@@ -43,6 +43,7 @@ const UserInfo = styled.div`
 `;
 
 const ImageBox = styled.div`
+    position: relative;
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -72,7 +73,7 @@ const Label = styled.div`
     background-color: #6c6c6c;
 `;
 
-const PartyUserList = ({ userList, isOpenUserList }: PartyUserListProps) => {
+const PartyUserList = ({ chatUser, isOpenUserList }: PartyUserListProps) => {
     const roomId = router.query.id;
     const handleClickUserExpulsion = () => {
         deletePartyUser({
@@ -87,45 +88,43 @@ const PartyUserList = ({ userList, isOpenUserList }: PartyUserListProps) => {
             <List>
                 <UserInfo>
                     <ImageBox>
-                        {/* <Image
-                    src={userProfileImg || ""}
-                    fill
-                    style={{ objectFit: "cover" }}
-                    alt={"host-image"}
-                  /> */}
+                        <Image
+                            src={chatUser?.myInfo?.userProfileImg || ''}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            alt=""
+                        />
                     </ImageBox>
 
-                    {/* 본인일경우 표시 */}
-                    {/* {chatUserId && <Label>나</Label>} */}
+                    <Label>나</Label>
+                    <NickName>{chatUser?.myInfo?.nickname}</NickName>
                 </UserInfo>
             </List>
             <hr />
             <Title>파티원 리스트 입니다.</Title>
             <List>
-                {userList?.map(({ nickname, userProfileImg, role, leader, chatUserId }) => (
-                    <ListItem key={nickname}>
-                        <UserInfo>
-                            <ImageBox>
-                                {/* <Image
-                    src={userProfileImg || ""}
-                    fill
-                    style={{ objectFit: "cover" }}
-                    alt={"host-image"}
-                  /> */}
-                            </ImageBox>
-                            {role === 'HOST' && <Label>방장</Label>}
-                            {/* 본인일경우 표시 */}
-                            {/* {chatUserId && <Label>나</Label>} */}
-                            <NickName>{nickname}</NickName>
-                        </UserInfo>
-                        {{
-                            /* 사용자가 방장일 경우 표시 */
-                        } &&
-                            {
-                                /* 본인일경우 제외 */
-                            } && <Expulsion onClick={handleClickUserExpulsion}>강퇴하기</Expulsion>}
-                    </ListItem>
-                ))}
+                {chatUser?.chatRoomUserDto.map(
+                    ({ nickname, userProfileImg, role, leader, chatUserId }) => (
+                        <ListItem key={nickname}>
+                            <UserInfo>
+                                <ImageBox>
+                                    <Image
+                                        src={userProfileImg || ''}
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                        alt=""
+                                    />
+                                </ImageBox>
+                                {role === 'HOST' && <Label>방장</Label>}
+                                <NickName>{nickname}</NickName>
+                            </UserInfo>
+
+                            {role === 'HOST' && chatUserId !== chatUser.myInfo.chatUserId && (
+                                <Expulsion onClick={handleClickUserExpulsion}>강퇴하기</Expulsion>
+                            )}
+                        </ListItem>
+                    ),
+                )}
             </List>
         </Wrapper>
     );

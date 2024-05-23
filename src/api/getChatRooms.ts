@@ -1,23 +1,14 @@
-import variableAssignMent from "@utils/variableAssignment";
-import defaultRequest from "src/lib/axios/defaultRequest";
-import { ChatRoomsResponse } from "types/chat/chatRooms";
+import variableAssignMent from '@utils/variableAssignment';
+import defaultRequest from 'src/lib/axios/defaultRequest';
+import { ChatRoomsResponse } from 'types/chat/chatRooms';
+export const API_GET_CHAT_ROOMS_KEY = '/api/chat-rooms?page={{page}}&size={{size}}';
 
-interface ChatRoomsParams {
-  size?: string;
-  lastChatRoomId?: string;
-}
+const getChatRooms = async (page: number): Promise<ChatRoomsResponse> => {
+    const { data } = await defaultRequest.get(
+        variableAssignMent(API_GET_CHAT_ROOMS_KEY, { page: String(page), size: '5' }),
+    );
 
-export const API_GET_CHAT_ROOMS_KEY =
-  "/api/chat-rooms?size={{size}}&lastChatRoomId={{lastChatRoomId}}";
-
-const getChatRooms = async ({
-  size = "5",
-  lastChatRoomId = "0",
-}: ChatRoomsParams): Promise<ChatRoomsResponse> => {
-  const { data } = await defaultRequest.get(
-    variableAssignMent(API_GET_CHAT_ROOMS_KEY, { size, lastChatRoomId })
-  );
-  return data;
+    return data;
 };
 
 export default getChatRooms;

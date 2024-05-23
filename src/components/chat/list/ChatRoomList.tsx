@@ -4,8 +4,9 @@ import router from 'next/router';
 import Image from 'next/image';
 import dayjs from 'dayjs';
 import { NextPage } from 'next';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import getChatRooms, { API_GET_CHAT_ROOMS_KEY } from 'src/api/getChatRooms';
+import { ObserverTrigger } from '@components/hoc/ObserverTrigger';
 
 const Wrapper = styled.div`
     padding: 2rem;
@@ -71,15 +72,22 @@ const Message = styled.p`
 const Recentime = styled.p``;
 
 const ChatListPage: NextPage = () => {
-    const { data } = useQuery({
+    const { fetchNextPage, hasNextPage, data } = useSuspenseInfiniteQuery({
         queryKey: [API_GET_CHAT_ROOMS_KEY],
-        queryFn: () => getChatRooms({}),
+        queryFn: ({ pageParam = 0 }) => getChatRooms(pageParam),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+            if (lastPage.pageInfo.hasNext) return lastPage.pageInfo.page + 1;
+        },
     });
 
     const handleOnChangeSearch = () => {};
     const handleOnClickSearch = () => {};
 
     const handleClickRouteRoom = (roomId: string) => router.push(`/chat/${roomId}`);
+
+    const chatRooms = data.pages.map((page) => page.responseChatRoomDtoList).flat();
+    const onObserve = () => hasNextPage && fetchNextPage();
 
     return (
         <Wrapper>
@@ -88,31 +96,33 @@ const ChatListPage: NextPage = () => {
                 <SearchButton onClick={handleOnClickSearch}>검색</SearchButton>
             </SearchBox>
             <RoomList>
-                {data?.responseChatRoomDtoList.map((item) => {
-                    const { roomId, title, lastMessageTime, lastMessage, thumbnail } = item;
+                <ObserverTrigger onObserve={onObserve} observerMinHeight={'30px'}>
+                    {chatRooms?.map((item) => {
+                        const { roomId, title, lastMessageTime, lastMessage, thumbnail } = item;
 
-                    return (
-                        <Room key={roomId} onClick={() => handleClickRouteRoom(roomId)}>
-                            <ImageBox style={{}}>
-                                <Image
-                                    fill
-                                    src={thumbnail}
-                                    alt="profile"
-                                    style={{ objectFit: 'cover' }}
-                                />
-                            </ImageBox>
-                            <RightBox>
-                                <TextBox>
-                                    <Title>{title}</Title>
-                                    <Message>{lastMessage}</Message>
-                                </TextBox>
-                                <Recentime>
-                                    {lastMessageTime ? displayTime(lastMessageTime) : ''}
-                                </Recentime>
-                            </RightBox>
-                        </Room>
-                    );
-                })}
+                        return (
+                            <Room key={roomId} onClick={() => handleClickRouteRoom(roomId)}>
+                                <ImageBox style={{}}>
+                                    <Image
+                                        fill
+                                        src={thumbnail}
+                                        alt="profile"
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                </ImageBox>
+                                <RightBox>
+                                    <TextBox>
+                                        <Title>{title}</Title>
+                                        <Message>{lastMessage}</Message>
+                                    </TextBox>
+                                    <Recentime>
+                                        {lastMessageTime ? displayTime(lastMessageTime) : ''}
+                                    </Recentime>
+                                </RightBox>
+                            </Room>
+                        );
+                    })}
+                </ObserverTrigger>
             </RoomList>
         </Wrapper>
     );

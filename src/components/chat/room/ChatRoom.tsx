@@ -3,18 +3,21 @@ import HeaderBtnGroup from '@components/chat/room/HeaderBtnGroup';
 import MessageList from '@components/chat/room/MessageList';
 import styled from '@emotion/styled';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { MouseEvent, useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { MouseEvent, useState, useEffect, useRef } from 'react';
 import getChatMessage, { API_GET_CHAT_MESSAGE_KEY } from 'src/api/getChatMessage';
 import * as StompJs from '@stomp/stompjs';
-import getChatUserList, { API_GET_CHAT_USER_LIST_KEY } from 'src/api/getChatUserList';
 import getChatRoomInfo, { API_GET_CHAT_ROOM_INFO_KEY } from 'src/api/getChatRoomInfo';
-import dayjs from 'dayjs';
+import { getCookie } from 'cookies-next';
+import { useForm } from 'react-hook-form';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { ObserverTrigger } from '@components/hoc/ObserverTrigger';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+    overflow: hidden;
 `;
 
 const Contents = styled.main`
@@ -27,24 +30,11 @@ interface ChattingRoomProps {
     roomId: string;
 }
 
-export type ChatMessagesType = {
-    // userId: string;
-    // userImage: string;
-    // userNickname: string;
-    // userMessage: string;
-
-    chatId?: number;
-    senderId?: number;
-    nickname?: string;
-    message: string;
-    createAt?: string;
-};
-
-let count = 0;
-
 const ChatRoom = ({ roomId }: ChattingRoomProps) => {
+    const refreshToken = getCookie('refreshToken');
     const queryClient = useQueryClient();
     const client = useRef<any>({});
+    const { register, handleSubmit, getValues } = useForm();
     const [isOpenUserList, setIsOpenUserList] = useState(false);
 
     const { data: roomInfo } = useQuery({
@@ -60,39 +50,16 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
             }),
     });
 
-    const { data: userList } = useQuery({
-        queryKey: [
-            API_GET_CHAT_USER_LIST_KEY,
-            {
-                roomId,
-            },
-        ],
-        queryFn: () =>
-            getChatUserList({
-                roomId,
-            }),
+    const { fetchNextPage, hasNextPage, data } = useSuspenseInfiniteQuery({
+        queryKey: [API_GET_CHAT_MESSAGE_KEY, { roomId }],
+        queryFn: ({ pageParam = 0 }) => getChatMessage({ roomId, page: pageParam }),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+            if (lastPage.pageInfo.hasNext) {
+                return lastPage.pageInfo.page + 1;
+            }
+        },
     });
-
-    const { data: messages } = useQuery({
-        queryKey: [
-            API_GET_CHAT_MESSAGE_KEY,
-            {
-                roomId,
-                size: '5',
-                lastChatId: '0',
-            },
-        ],
-        queryFn: () =>
-            getChatMessage({
-                roomId,
-                size: '5',
-                lastChatId: '0',
-            }),
-    });
-
-    const [chatMessages, setChatMessages] = useState<any[]>([
-        { message: '채팅을 시작할 수 있습니다.' },
-    ]);
 
     // const handleCloseUserList = (e: MouseEvent<HTMLDivElement>) => {
     //   e.stopPropagation();
@@ -105,32 +72,23 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
     };
 
     useEffect(() => {
-        if (!roomId) return;
+        if (!roomId && !refreshToken) return;
 
         const connect = () => {
             client.current = new StompJs.Client({
                 brokerURL: 'ws://localhost:8080/ws',
                 connectHeaders: {
-                    Authorization:
-                        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBY2Nlc3NUb2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJzb2NpYWxJZCI6IjEyMzA5ODEyMzA5MTI4MzAxIiwiZXhwIjoxNzE1NDc3ODAzfQ.o3WxWeaLzUEtoDjJgay_KR3uAvdEjjrX00jmjmIXoantYlUsWgWCCj1gbkdOdElqiKuYIdfuTA23tRAy4B_zfA',
+                    Authorization: String(refreshToken),
                 },
                 reconnectDelay: 0, // 자동 재연결
                 heartbeatIncoming: 10000,
                 heartbeatOutgoing: 10000,
                 onConnect: (frame) => {
-                    client.current.subscribe(
-                        `/sub/chat/room/${roomId}`,
-                        (message: { body: string }) => {
-                            //구독하는 채널
-                            const newMessage = JSON.parse(message.body);
+                    client.current.subscribe(`/sub/chat/room/${Number(roomId)}`);
 
-                            setChatMessages((prev) => {
-                                if (prev) return [...prev, newMessage];
-
-                                return [newMessage];
-                            });
-                        },
-                    );
+                    queryClient.invalidateQueries({
+                        queryKey: [API_GET_CHAT_MESSAGE_KEY, { roomId }],
+                    });
                 },
             });
 
@@ -140,49 +98,47 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
         connect();
 
         return () => client.current.deactivate();
-    }, [roomId]);
+    }, [queryClient, refreshToken, roomId]);
 
-    const handleClickSubmit = async () => {
-        count += 1;
+    const handleClickSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (!roomInfo?.responseChatUserList) return;
 
         client.current.publish({
-            destination: `/sub/chat/room/${roomId}`,
+            destination: `/pub/message`,
             body: JSON.stringify({
+                type: 'TALK',
                 roomId: Number(roomId),
-                userImage: '',
-                nickname: 'test',
-                chatUserId: 11,
-                message: `채팅 메시지 테스트 ${count}`,
+                userImage: roomInfo?.responseChatUserList.myInfo?.userProfileImg,
+                nickname: roomInfo?.responseChatUserList.myInfo.nickname,
+                chatUserId: Number(roomInfo?.responseChatUserList.myInfo.chatUserId),
+                message: getValues('message'),
                 createAt: Date.now(),
             }),
         });
 
-        // await queryClient.invalidateQueries({
-        //   queryKey: [
-        //     API_GET_CHAT_MESSAGE_KEY,
-        //     { roomId: "11", size: "5", lastChatId: "0" },
-        //   ],
-        // });
+        await queryClient.invalidateQueries({
+            queryKey: [API_GET_CHAT_MESSAGE_KEY, { roomId }],
+        });
     };
 
-    useEffect(() => {
-        console.log(chatMessages);
-    }, [chatMessages]);
+    const onObserve = () => hasNextPage && fetchNextPage();
+    const messages = data.pages.map((page) => page.responseChatDtoList).flat();
 
     return (
         <Wrapper>
-            {userList && roomInfo ? (
+            {roomInfo ? (
                 <HeaderBtnGroup
                     isOpenUserList={isOpenUserList}
                     handleOpenUserList={handleOpenUserList}
                     roomInfo={roomInfo}
-                    userList={userList}
                 />
             ) : null}
             <Contents>
-                <button onClick={handleClickSubmit}>메시지 전송</button>
-                <MessageList messages={chatMessages} />
-                <BottomInputGroup />
+                <ObserverTrigger onObserve={onObserve} observerMinHeight={'30px'}>
+                    <MessageList messages={messages} />
+                </ObserverTrigger>
+                <BottomInputGroup register={register} handleClickSubmit={handleClickSubmit} />
             </Contents>
         </Wrapper>
     );

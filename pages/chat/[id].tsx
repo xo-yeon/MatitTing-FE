@@ -1,28 +1,29 @@
-import { ReactNode } from "react";
-import { GetServerSideProps } from "next";
-import QuerySuspenseErrorBoundary from "@components/hoc/QuerySuspenseErrorBoundary";
-import ChatRoom from "@components/chat/room/ChatRoom";
+import { ReactNode } from 'react';
+import { GetServerSideProps } from 'next';
+import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
+import ChatRoom from '@components/chat/room/ChatRoom';
+import ProfileLoading from '@components/profile/ProfileLoading';
 
 interface ChatRoomPageProps {
-  roomId: string;
+    roomId: string;
 }
 
 const ChatRoomPage = ({ roomId }: ChatRoomPageProps) => (
-  <QuerySuspenseErrorBoundary>
-    <ChatRoom roomId={roomId} />
-  </QuerySuspenseErrorBoundary>
+    <QuerySuspenseErrorBoundary suspenseFallback={<ProfileLoading />}>
+        <ChatRoom roomId={roomId} />
+    </QuerySuspenseErrorBoundary>
 );
 
 ChatRoomPage.getLayout = (page: ReactNode) => {
-  return <>{page}</>;
+    return <>{page}</>;
 };
 
 export default ChatRoomPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const { id: roomId } = params as { id: string };
+    const { id: roomId } = params as { id: string };
 
-  return {
-    props: { roomId },
-  };
+    return {
+        props: { roomId },
+    };
 };
