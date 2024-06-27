@@ -39,31 +39,23 @@ interface BottomInputGroupProps {
 }
 
 const BottomInputGroup = ({ register, handleClickSubmit }: BottomInputGroupProps) => {
-    // const handleClickSubmit = (e: MouseEvent<HTMLButtonElement>) => {};
-
     const handleChangeImageFile = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
     };
 
     return (
         <Wrapper>
-            <TextInput
-                placeholder="message"
-                isBorderRadius={false}
-                maxLength={20}
-                {...register('message')}
-            />
-            <form id="form"></form>
+            <TextInput isBorderRadius={false} maxLength={20} {...register('message')} />
             {/* <ImageUploadButton aria-label="upload picture" htmlFor="add_image">
-        +
-      </ImageUploadButton>
-      <input
-        hidden
-        id="add_image"
-        type="file"
-        accept=".jpeg,.png"
-        onChange={handleChangeImageFile}
-      /> */}
+                +
+            </ImageUploadButton>
+            <input
+                hidden
+                id="add_image"
+                type="file"
+                accept=".jpeg,.png"
+                onChange={handleChangeImageFile}
+            /> */}
             <SubmitButton type="submit" onClick={handleClickSubmit}>
                 전송
             </SubmitButton>

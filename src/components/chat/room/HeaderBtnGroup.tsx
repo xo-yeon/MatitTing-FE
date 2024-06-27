@@ -2,7 +2,7 @@ import { ReactElement, MouseEventHandler } from 'react';
 import PartyUserList from './PartyUserList';
 import ListIcon from '@mui/icons-material/List';
 import styled from '@emotion/styled';
-import { ChatRoomInfoResponse, ChatUserResponse } from 'types/chat/chatRooms';
+import { ChatRoomInfoResponse } from 'types/chat/chatRooms';
 import { HeaderBackButton } from '@components/common/HeaderBackButton';
 
 interface HeaderBtnGroupProps {

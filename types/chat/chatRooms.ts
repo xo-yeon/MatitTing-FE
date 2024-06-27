@@ -27,12 +27,14 @@ export interface ChatRoomInfo {
 
 export interface ChatUserResponse {
     chatRoomUserDto: ChatUserListResponse[];
-    myInfo: {
-        chatUserId: number;
-        nickname: string;
-        role: string;
-        userProfileImg: string;
-    };
+    myInfo: MyInfo;
+}
+
+export interface MyInfo {
+    chatUserId: number;
+    nickname: string;
+    role: string;
+    userProfileImg: string;
 }
 export interface ChatUserListResponse {
     chatUserId: number;

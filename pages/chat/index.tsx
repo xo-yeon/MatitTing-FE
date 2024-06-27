@@ -4,7 +4,6 @@ import { DefaultHeader } from '@components/common/DefaultHeader';
 import { DefaultText } from '@components/common/DefaultText';
 import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
 import ChatRoomList from '@components/chat/list/ChatRoomList';
-import ProfileLoading from '@components/profile/ProfileLoading';
 
 const Wrapper = styled.div`
     height: 100%;
@@ -23,7 +22,6 @@ const ChatListPage: NextPage = () => (
         <DefaultHeader centerArea={<DefaultText text="채팅방" size={17} weight={700} />} />
         <QuerySuspenseErrorBoundary
             errorFallback={() => <NotList>참여중인 방이 없습니다.</NotList>}
-            suspenseFallback={<ProfileLoading />}
         >
             <ChatRoomList />
         </QuerySuspenseErrorBoundary>

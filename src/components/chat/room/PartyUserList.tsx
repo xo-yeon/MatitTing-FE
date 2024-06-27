@@ -75,10 +75,10 @@ const Label = styled.div`
 
 const PartyUserList = ({ chatUser, isOpenUserList }: PartyUserListProps) => {
     const roomId = router.query.id;
-    const handleClickUserExpulsion = () => {
+    const handleClickUserExpulsion = (chatUserId: number) => {
         deletePartyUser({
             roomId: String(roomId),
-            targetId: '',
+            targetChatUserId: chatUserId,
         });
     };
 
@@ -89,13 +89,12 @@ const PartyUserList = ({ chatUser, isOpenUserList }: PartyUserListProps) => {
                 <UserInfo>
                     <ImageBox>
                         <Image
-                            src={chatUser?.myInfo?.userProfileImg || ''}
+                            src={chatUser?.myInfo?.userProfileImg || '/images/profile/profile.png'}
                             fill
                             style={{ objectFit: 'cover' }}
                             alt=""
                         />
                     </ImageBox>
-
                     <Label>나</Label>
                     <NickName>{chatUser?.myInfo?.nickname}</NickName>
                 </UserInfo>
@@ -103,28 +102,27 @@ const PartyUserList = ({ chatUser, isOpenUserList }: PartyUserListProps) => {
             <hr />
             <Title>파티원 리스트 입니다.</Title>
             <List>
-                {chatUser?.chatRoomUserDto.map(
-                    ({ nickname, userProfileImg, role, leader, chatUserId }) => (
-                        <ListItem key={nickname}>
-                            <UserInfo>
-                                <ImageBox>
-                                    <Image
-                                        src={userProfileImg || ''}
-                                        fill
-                                        style={{ objectFit: 'cover' }}
-                                        alt=""
-                                    />
-                                </ImageBox>
-                                {role === 'HOST' && <Label>방장</Label>}
-                                <NickName>{nickname}</NickName>
-                            </UserInfo>
-
-                            {role === 'HOST' && chatUserId !== chatUser.myInfo.chatUserId && (
-                                <Expulsion onClick={handleClickUserExpulsion}>강퇴하기</Expulsion>
-                            )}
-                        </ListItem>
-                    ),
-                )}
+                {chatUser?.chatRoomUserDto.map(({ nickname, userProfileImg, role, chatUserId }) => (
+                    <ListItem key={nickname}>
+                        <UserInfo>
+                            <ImageBox>
+                                <Image
+                                    src="/images/profile/profile.png"
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                    alt=""
+                                />
+                            </ImageBox>
+                            {role === 'HOST' && <Label>방장</Label>}
+                            <NickName>{nickname}</NickName>
+                        </UserInfo>
+                        {chatUser.myInfo.role === 'HOST' && role !== 'HOST' && (
+                            <Expulsion onClick={() => handleClickUserExpulsion(chatUserId)}>
+                                강퇴하기
+                            </Expulsion>
+                        )}
+                    </ListItem>
+                ))}
             </List>
         </Wrapper>
     );

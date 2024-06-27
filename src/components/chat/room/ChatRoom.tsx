@@ -2,15 +2,15 @@ import BottomInputGroup from '@components/chat/room/BottomInputGroup';
 import HeaderBtnGroup from '@components/chat/room/HeaderBtnGroup';
 import MessageList from '@components/chat/room/MessageList';
 import styled from '@emotion/styled';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { InfiniteData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { MouseEvent, useState, useEffect, useRef } from 'react';
 import getChatMessage, { API_GET_CHAT_MESSAGE_KEY } from 'src/api/getChatMessage';
-import * as StompJs from '@stomp/stompjs';
+import { IMessage, Client } from '@stomp/stompjs';
 import getChatRoomInfo, { API_GET_CHAT_ROOM_INFO_KEY } from 'src/api/getChatRoomInfo';
 import { getCookie } from 'cookies-next';
 import { useForm } from 'react-hook-form';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { ObserverTrigger } from '@components/hoc/ObserverTrigger';
+import { ChatMessagesType } from 'types/chat/chat';
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,7 +34,7 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
     const refreshToken = getCookie('refreshToken');
     const queryClient = useQueryClient();
     const client = useRef<any>({});
-    const { register, handleSubmit, getValues } = useForm();
+    const { register, getValues, setValue } = useForm();
     const [isOpenUserList, setIsOpenUserList] = useState(false);
 
     const { data: roomInfo } = useQuery({
@@ -55,7 +55,7 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
         queryFn: ({ pageParam = 0 }) => getChatMessage({ roomId, page: pageParam }),
         initialPageParam: 0,
         getNextPageParam: (lastPage) => {
-            if (lastPage.pageInfo.hasNext) {
+            if (lastPage.pageInfo?.hasNext) {
                 return lastPage.pageInfo.page + 1;
             }
         },
@@ -75,20 +75,73 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
         if (!roomId && !refreshToken) return;
 
         const connect = () => {
-            client.current = new StompJs.Client({
+            client.current = new Client({
                 brokerURL: 'ws://localhost:8080/ws',
                 connectHeaders: {
-                    Authorization: String(refreshToken),
+                    // Authorization: String(refreshToken),
+                    Authorization:
+                        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJSZWZyZXNoVG9rZW4iLCJyb2xlIjoiUk9MRV9VU0VSIiwic29jaWFsSWQiOiIxMjMwOTgxMjMwOTEyODMwMSIsImV4cCI6MTc0NTQyMjUzMX0.fFVxWepJEz4RmDKw4-impGvzC9U7gMf8AC4g57Z9eBQ-xCNWXBsFNgMoCMrcwtdU1FOMVQ_di1dZAZZgw6Gzyw',
                 },
                 reconnectDelay: 0, // 자동 재연결
                 heartbeatIncoming: 10000,
                 heartbeatOutgoing: 10000,
-                onConnect: (frame) => {
-                    client.current.subscribe(`/sub/chat/room/${Number(roomId)}`);
+                onConnect: () => {
+                    client.current.subscribe(
+                        `/sub/chat/room/${Number(roomId)}`,
+                        async (res: IMessage) => {
+                            const LIST_QUERY_KEY = [API_GET_CHAT_MESSAGE_KEY, { roomId }];
+                            type LIST_QUERY_TYPE = InfiniteData<
+                                InfinitePaginationDataType<
+                                    'responseChatDtoList',
+                                    ChatMessagesType | string
+                                >,
+                                unknown
+                            >;
 
-                    queryClient.invalidateQueries({
-                        queryKey: [API_GET_CHAT_MESSAGE_KEY, { roomId }],
-                    });
+                            await queryClient.cancelQueries({ queryKey: LIST_QUERY_KEY });
+
+                            const regex = /chatUserId/g;
+
+                            if (regex.test(res.body)) {
+                                const message = JSON.parse(res.body);
+
+                                await queryClient.setQueryData(
+                                    LIST_QUERY_KEY,
+                                    (prev: LIST_QUERY_TYPE) => {
+                                        let newList = prev;
+
+                                        // last pages unshift
+                                        newList.pages[0].responseChatDtoList.unshift({
+                                            chatId: message.createAt,
+                                            createAt: message.createAt,
+                                            imgUrl: message.userImage,
+                                            message: message.message,
+                                            nickname: message.nickname,
+                                            senderId: message.chatUserId,
+                                        });
+
+                                        return newList;
+                                    },
+                                );
+                            } else {
+                                await queryClient.setQueryData(
+                                    LIST_QUERY_KEY,
+                                    (prev: LIST_QUERY_TYPE) => {
+                                        let newList = prev;
+
+                                        // last pages unshift
+                                        newList.pages[0].responseChatDtoList.unshift(res.body);
+
+                                        return newList;
+                                    },
+                                );
+                            }
+
+                            await queryClient.invalidateQueries({
+                                queryKey: [API_GET_CHAT_MESSAGE_KEY, { roomId }],
+                            });
+                        },
+                    );
                 },
             });
 
@@ -104,7 +157,10 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
         e.preventDefault();
         if (!roomInfo?.responseChatUserList) return;
 
-        client.current.publish({
+        const currentTime = Date.now();
+        const message = getValues('message');
+
+        await client.current.publish({
             destination: `/pub/message`,
             body: JSON.stringify({
                 type: 'TALK',
@@ -112,14 +168,12 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
                 userImage: roomInfo?.responseChatUserList.myInfo?.userProfileImg,
                 nickname: roomInfo?.responseChatUserList.myInfo.nickname,
                 chatUserId: Number(roomInfo?.responseChatUserList.myInfo.chatUserId),
-                message: getValues('message'),
-                createAt: Date.now(),
+                message: message,
+                createAt: currentTime,
             }),
         });
 
-        await queryClient.invalidateQueries({
-            queryKey: [API_GET_CHAT_MESSAGE_KEY, { roomId }],
-        });
+        setValue('message', '');
     };
 
     const onObserve = () => hasNextPage && fetchNextPage();
@@ -135,9 +189,14 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
                 />
             ) : null}
             <Contents>
-                <ObserverTrigger onObserve={onObserve} observerMinHeight={'30px'}>
-                    <MessageList messages={messages} />
-                </ObserverTrigger>
+                {roomInfo ? (
+                    <MessageList
+                        myInfo={roomInfo?.responseChatUserList.myInfo}
+                        messages={messages}
+                        onObserve={onObserve}
+                        observerMinHeight="10px"
+                    />
+                ) : null}
                 <BottomInputGroup register={register} handleClickSubmit={handleClickSubmit} />
             </Contents>
         </Wrapper>
