@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { ChangeEvent } from 'react';
 import styled from '@emotion/styled';
 import Create from '@components/party/create/Create';
@@ -142,3 +142,22 @@ const CreatePage: NextPage = () => {
 };
 
 export default CreatePage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const { req } = context;
+
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/signin',
+            },
+        };
+    }
+
+    return {
+        props: {},
+    };
+};
