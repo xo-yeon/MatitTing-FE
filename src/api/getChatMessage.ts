@@ -1,14 +1,5 @@
 import defaultRequest from 'src/lib/axios/defaultRequest';
-import { ChatMessagesType } from 'types/chat/chat';
-
-type InfinitePaginationDataType<K extends string, T> = {
-    [key in K]: T[];
-} & {
-    pageInfo: {
-        page: number;
-        hasNext: boolean;
-    };
-};
+import { ChatMessagesType, InfinitePaginationChatDataType } from 'types/chat/chat';
 
 interface ChatMessageParams {
     roomId: string;
@@ -19,7 +10,7 @@ export const API_GET_CHAT_MESSAGE_KEY = '/api/chat/{{roomId}}?page={{page}}';
 
 const getChatMessage = async ({ roomId, page }: ChatMessageParams) => {
     const { data } = await defaultRequest.get<
-        InfinitePaginationDataType<'responseChatDtoList', ChatMessagesType>
+        InfinitePaginationChatDataType<'responseChatDtoList', ChatMessagesType>
     >(`/api/chat/${roomId}`, { params: { page } });
 
     return data;

@@ -13,8 +13,8 @@ export const ObserverTrigger: FC<PropsWithChildren<ObserverTriggerProps>> = ({
 }) => {
     return (
         <>
-            <Observer onObserve={onObserve} minHeight={observerMinHeight} />
             {children}
+            <Observer onObserve={onObserve} minHeight={observerMinHeight} />
         </>
     );
 };

@@ -15,7 +15,6 @@ import { postUploadImage } from 'src/api/postUploadImage';
 import { useRecoilValue } from 'recoil';
 import { API_GET_MAIN_PAGE } from 'src/api/getPartyMainPage';
 import { PositionSate } from 'src/recoil-states/positionStates';
-import { getCookie } from 'cookies-next';
 import { API_GET_CHAT_ROOMS_KEY } from 'src/api/getChatRooms';
 
 const Form = styled.form`
@@ -42,7 +41,6 @@ export const partySchema = yup.object({
 
 const CreatePage: NextPage = () => {
     const queryClient = useQueryClient();
-    const refreshToken = getCookie('refreshToken');
     const position = useRecoilValue(PositionSate);
 
     const { mutate: postPartyCreate } = useMutation({

@@ -1,16 +1,18 @@
 export interface ChatRoomsResponse {
-    responseChatRoomDtoList: {
-        roomId: string;
-        title: string;
-        lastUpdate: string;
-        lastMessage: string;
-        lastMessageTime: string;
-        thumbnail: string;
-    }[];
+    responseChatRoomDtoList: ChatRoomList[];
     pageInfo: {
         page: number;
         hasNext: boolean;
     };
+}
+
+export interface ChatRoomList {
+    roomId: number;
+    title: string;
+    lastUpdate: string;
+    lastMessage: string;
+    lastMessageTime: string;
+    thumbnail: string;
 }
 
 export interface ChatRoomInfoResponse {

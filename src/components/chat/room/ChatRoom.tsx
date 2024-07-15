@@ -10,7 +10,7 @@ import getChatRoomInfo, { API_GET_CHAT_ROOM_INFO_KEY } from 'src/api/getChatRoom
 import { getCookie } from 'cookies-next';
 import { useForm } from 'react-hook-form';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { ChatMessagesType } from 'types/chat/chat';
+import { ChatMessagesType, InfinitePaginationChatDataType } from 'types/chat/chat';
 
 const Wrapper = styled.div`
     display: flex;
@@ -91,7 +91,7 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
                         async (res: IMessage) => {
                             const LIST_QUERY_KEY = [API_GET_CHAT_MESSAGE_KEY, { roomId }];
                             type LIST_QUERY_TYPE = InfiniteData<
-                                InfinitePaginationDataType<
+                                InfinitePaginationChatDataType<
                                     'responseChatDtoList',
                                     ChatMessagesType | string
                                 >,

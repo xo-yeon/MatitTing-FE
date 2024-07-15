@@ -1,10 +1,11 @@
-export interface ChatMessageResponse {
-    responseChatDtoList: ChatMessagesType[];
+export type InfinitePaginationChatDataType<K extends string, T> = {
+    [key in K]: T[];
+} & {
     pageInfo: {
         page: number;
         hasNext: boolean;
     };
-}
+};
 
 export type ChatMessagesType = {
     chatId: string;
@@ -14,3 +15,12 @@ export type ChatMessagesType = {
     nickname: string;
     senderId: number;
 };
+
+export interface SearchChatRoomsResponse {
+    roomId: number;
+    title: string;
+    thumbnail: string;
+    lastMessage: string;
+    lastUpdate: string;
+    lastMessageTime: string;
+}
