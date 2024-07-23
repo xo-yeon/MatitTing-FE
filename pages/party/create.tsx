@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import styled from '@emotion/styled';
 import Create from '@components/party/create/Create';
 import SearchMap from '@components/party/create/SearchMap';
@@ -39,7 +39,11 @@ export const partySchema = yup.object({
     status: yup.string(),
 });
 
-const CreatePage: NextPage = () => {
+interface CreatePageProviderProps {
+    loginMessage: string;
+}
+
+export const CreatePage = () => {
     const queryClient = useQueryClient();
     const position = useRecoilValue(PositionSate);
 
@@ -141,23 +145,30 @@ const CreatePage: NextPage = () => {
     );
 };
 
-export default CreatePage;
+const CreatePageProvider: NextPage<CreatePageProviderProps> = ({ loginMessage }) => {
+    useEffect(() => {
+        const loginRoutting = async () => {
+            if (loginMessage.length) {
+                alert('로그인이 필요합니다. 로그인 해 주세요.');
+                await router.replace('/signin');
+            }
+        };
+
+        loginRoutting();
+    }, [loginMessage.length]);
+
+    return loginMessage ? <></> : <CreatePage />;
+};
+
+export default CreatePageProvider;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const { req } = context;
-
     const refreshToken = req.cookies.refreshToken;
 
-    if (!refreshToken) {
-        return {
-            redirect: {
-                permanent: false,
-                destination: '/signin',
-            },
-        };
-    }
-
     return {
-        props: {},
+        props: {
+            loginMessage: refreshToken ? '' : '로그인 필요',
+        },
     };
 };
