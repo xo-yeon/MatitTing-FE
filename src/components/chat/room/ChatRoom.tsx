@@ -33,7 +33,7 @@ interface ChattingRoomProps {
 const ChatRoom = ({ roomId }: ChattingRoomProps) => {
     const refreshToken = getCookie('refreshToken');
     const queryClient = useQueryClient();
-    const client = useRef<any>({});
+    const client = useRef<Client | null>(null);
     const { register, getValues, setValue } = useForm();
     const [isOpenUserList, setIsOpenUserList] = useState(false);
 
@@ -61,11 +61,6 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
         },
     });
 
-    // const handleCloseUserList = (e: MouseEvent<HTMLDivElement>) => {
-    //   e.stopPropagation();
-    //   setIsOpenUserList(false);
-    // };
-
     const handleOpenUserList = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
         setIsOpenUserList(!isOpenUserList);
@@ -78,15 +73,13 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
             client.current = new Client({
                 brokerURL: 'ws://localhost:8080/ws',
                 connectHeaders: {
-                    // Authorization: String(refreshToken),
-                    Authorization:
-                        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJSZWZyZXNoVG9rZW4iLCJyb2xlIjoiUk9MRV9VU0VSIiwic29jaWFsSWQiOiIxMjMwOTgxMjMwOTEyODMwMSIsImV4cCI6MTc0NTQyMjUzMX0.fFVxWepJEz4RmDKw4-impGvzC9U7gMf8AC4g57Z9eBQ-xCNWXBsFNgMoCMrcwtdU1FOMVQ_di1dZAZZgw6Gzyw',
+                    Authorization: String(refreshToken),
                 },
                 reconnectDelay: 0, // 자동 재연결
                 heartbeatIncoming: 10000,
                 heartbeatOutgoing: 10000,
                 onConnect: () => {
-                    client.current.subscribe(
+                    client.current?.subscribe(
                         `/sub/chat/room/${Number(roomId)}`,
                         async (res: IMessage) => {
                             const LIST_QUERY_KEY = [API_GET_CHAT_MESSAGE_KEY, { roomId }];
@@ -116,6 +109,7 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
                                             createAt: message.createAt,
                                             imgUrl: message.userImage,
                                             message: message.message,
+                                            messageType: 'TALK',
                                             nickname: message.nickname,
                                             senderId: message.chatUserId,
                                         });
@@ -150,7 +144,7 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
 
         connect();
 
-        return () => client.current.deactivate();
+        // return () => client.current?.deactivate();
     }, [queryClient, refreshToken, roomId]);
 
     const handleClickSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
@@ -160,7 +154,7 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
         const currentTime = Date.now();
         const message = getValues('message');
 
-        await client.current.publish({
+        await client.current?.publish({
             destination: `/pub/message`,
             body: JSON.stringify({
                 type: 'TALK',

@@ -72,8 +72,8 @@ const ReadMark = styled.div<{ userCheck: boolean }>`
     color: rosybrown;
 `;
 
-const NotMessage = styled.div`
-    margin: 2rem auto;
+const Notification = styled.div`
+    margin: 1rem auto;
 `;
 
 interface MessageListProps {
@@ -85,8 +85,8 @@ interface MessageListProps {
 
 const MessageList = ({ messages, onObserve, observerMinHeight, myInfo }: MessageListProps) => (
     <List>
-        {messages.map(({ message, nickname, createAt, imgUrl }) => {
-            return nickname ? (
+        {messages.map(({ message, nickname, createAt, imgUrl, messageType }) => {
+            return messageType === 'TALK' ? (
                 <ListItem key={createAt} userCheck={nickname === myInfo.nickname}>
                     <ImageBox userCheck={nickname === myInfo.nickname}>
                         <Image
@@ -107,7 +107,7 @@ const MessageList = ({ messages, onObserve, observerMinHeight, myInfo }: Message
                     </ReadMark>
                 </ListItem>
             ) : (
-                <NotMessage>{message}</NotMessage>
+                <Notification>{message}</Notification>
             );
         })}
         <ObserverTrigger onObserve={onObserve} observerMinHeight={observerMinHeight} />

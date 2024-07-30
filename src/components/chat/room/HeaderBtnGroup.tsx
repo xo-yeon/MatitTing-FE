@@ -29,23 +29,21 @@ const MenuBtn = styled.button`
 
 const ChatTitle = styled.h3``;
 
-const HeaderBtnGroup = ({ roomInfo, isOpenUserList, handleOpenUserList }: HeaderBtnGroupProps) => {
-    return (
-        <Wrapper>
-            <HeaderBackButton />
-            <ChatTitle>{roomInfo?.chatRoomInfoRes.title}</ChatTitle>
-            <MenuBtn onClick={handleOpenUserList}>
-                <ListIcon fontSize="large" />
-            </MenuBtn>
-            {isOpenUserList ? (
-                <PartyUserList
-                    isOpenUserList={isOpenUserList}
-                    chatUser={roomInfo?.responseChatUserList}
-                />
-            ) : null}
-        </Wrapper>
-    );
-};
+const HeaderBtnGroup = ({ roomInfo, isOpenUserList, handleOpenUserList }: HeaderBtnGroupProps) => (
+    <Wrapper>
+        <HeaderBackButton />
+        <ChatTitle>{roomInfo?.chatRoomInfoRes.title}</ChatTitle>
+        <MenuBtn onClick={handleOpenUserList}>
+            <ListIcon fontSize="large" />
+        </MenuBtn>
+        {isOpenUserList ? (
+            <PartyUserList
+                isOpenUserList={isOpenUserList}
+                chatUser={roomInfo?.responseChatUserList}
+            />
+        ) : null}
+    </Wrapper>
+);
 
 HeaderBtnGroup.getLayout = (page: ReactElement) => {
     return <>{page}</>;

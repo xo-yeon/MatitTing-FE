@@ -12,6 +12,7 @@ export type ChatMessagesType = {
     createAt: string;
     imgUrl: string;
     message: string;
+    messageType: 'TALK' | 'ENTER' | 'EXIT';
     nickname: string;
     senderId: number;
 };
