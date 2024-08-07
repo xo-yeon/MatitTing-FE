@@ -114,8 +114,4 @@ const MessageList = ({ messages, onObserve, observerMinHeight, myInfo }: Message
     </List>
 );
 
-MessageList.getLayout = (page: ReactElement) => {
-    return <>{page}</>;
-};
-
 export default MessageList;

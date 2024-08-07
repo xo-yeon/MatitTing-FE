@@ -128,8 +128,4 @@ const PartyUserList = ({ chatUser, isOpenUserList }: PartyUserListProps) => {
     );
 };
 
-PartyUserList.getLayout = (page: ReactElement) => {
-    return <>{page}</>;
-};
-
 export default PartyUserList;

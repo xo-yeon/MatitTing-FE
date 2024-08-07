@@ -45,8 +45,4 @@ const HeaderBtnGroup = ({ roomInfo, isOpenUserList, handleOpenUserList }: Header
     </Wrapper>
 );
 
-HeaderBtnGroup.getLayout = (page: ReactElement) => {
-    return <>{page}</>;
-};
-
 export default HeaderBtnGroup;

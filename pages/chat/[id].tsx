@@ -14,10 +14,6 @@ const ChatRoomPage = ({ roomId }: ChatRoomPageProps) => (
     </QuerySuspenseErrorBoundary>
 );
 
-ChatRoomPage.getLayout = (page: ReactNode) => {
-    return <>{page}</>;
-};
-
 export default ChatRoomPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {

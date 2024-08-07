@@ -32,8 +32,4 @@ const BottomInputGroup = ({ register, handleClickSubmit }: BottomInputGroupProps
     </Wrapper>
 );
 
-BottomInputGroup.getLayout = (page: ReactElement) => {
-    return <>{page}</>;
-};
-
 export default BottomInputGroup;
