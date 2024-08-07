@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { ReactElement } from 'react';
 import router from 'next/router';
 import Image from 'next/image';
 import { ChatUserResponse } from 'types/chat/chatRooms';
@@ -89,14 +88,17 @@ const PartyUserList = ({ chatUser, isOpenUserList }: PartyUserListProps) => {
                 <UserInfo>
                     <ImageBox>
                         <Image
-                            src={chatUser?.myInfo?.userProfileImg || '/images/profile/profile.png'}
+                            src={
+                                chatUser?.chatUserInfo?.userProfileImg ||
+                                '/images/profile/profile.png'
+                            }
                             fill
                             style={{ objectFit: 'cover' }}
-                            alt=""
+                            alt="프로필 이미지"
                         />
                     </ImageBox>
                     <Label>나</Label>
-                    <NickName>{chatUser?.myInfo?.nickname}</NickName>
+                    <NickName>{chatUser?.chatUserInfo?.nickname}</NickName>
                 </UserInfo>
             </List>
             <hr />
@@ -110,13 +112,13 @@ const PartyUserList = ({ chatUser, isOpenUserList }: PartyUserListProps) => {
                                     src="/images/profile/profile.png"
                                     fill
                                     style={{ objectFit: 'cover' }}
-                                    alt=""
+                                    alt="프로필 이미지"
                                 />
                             </ImageBox>
                             {role === 'HOST' && <Label>방장</Label>}
                             <NickName>{nickname}</NickName>
                         </UserInfo>
-                        {chatUser.myInfo.role === 'HOST' && role !== 'HOST' && (
+                        {chatUser.chatUserInfo.role === 'HOST' && role !== 'HOST' && (
                             <Expulsion onClick={() => handleClickUserExpulsion(chatUserId)}>
                                 강퇴하기
                             </Expulsion>

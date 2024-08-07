@@ -107,12 +107,12 @@ const ChatListPage: NextPage = () => {
 export default ChatListPage;
 
 export const displayTime = (time: string) => {
-    const lastMessageTime = dayjs(time).format('YYYY.MM.MM');
-    const currentTime = dayjs(Date.now()).format('YYYY.MM.MM');
+    const lastMessageTime = dayjs(time).format('YYYY.MM.DD');
+    const currentTime = dayjs().format('YYYY.MM.DD');
 
     if (lastMessageTime === currentTime) {
         return dayjs(time).format('HH:mm');
     }
 
-    return dayjs(time).format('YYYY.MM.MM');
+    return dayjs(time).format('YYYY.MM.DD');
 };

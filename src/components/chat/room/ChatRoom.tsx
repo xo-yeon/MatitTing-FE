@@ -1,5 +1,5 @@
-import BottomInputGroup from '@components/chat/room/BottomInputGroup';
-import HeaderBtnGroup from '@components/chat/room/HeaderBtnGroup';
+import ChatInput from '@components/chat/room/ChatInput';
+import ChatHeader from '@components/chat/room/ChatHeader';
 import MessageList from '@components/chat/room/MessageList';
 import styled from '@emotion/styled';
 import { InfiniteData, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -159,9 +159,9 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
             body: JSON.stringify({
                 type: 'TALK',
                 roomId: Number(roomId),
-                userImage: roomInfo?.responseChatUserList.myInfo?.userProfileImg,
-                nickname: roomInfo?.responseChatUserList.myInfo.nickname,
-                chatUserId: Number(roomInfo?.responseChatUserList.myInfo.chatUserId),
+                userImage: roomInfo?.responseChatUserList.chatUserInfo?.userProfileImg,
+                nickname: roomInfo?.responseChatUserList.chatUserInfo.nickname,
+                chatUserId: Number(roomInfo?.responseChatUserList.chatUserInfo.chatUserId),
                 message: message,
                 createAt: currentTime,
             }),
@@ -176,7 +176,7 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
     return (
         <Wrapper>
             {roomInfo ? (
-                <HeaderBtnGroup
+                <ChatHeader
                     isOpenUserList={isOpenUserList}
                     handleOpenUserList={handleOpenUserList}
                     roomInfo={roomInfo}
@@ -185,13 +185,13 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
             <Contents>
                 {roomInfo ? (
                     <MessageList
-                        myInfo={roomInfo?.responseChatUserList.myInfo}
+                        chatUserInfo={roomInfo?.responseChatUserList.chatUserInfo}
                         messages={messages}
                         onObserve={onObserve}
                         observerMinHeight="10px"
                     />
                 ) : null}
-                <BottomInputGroup register={register} handleClickSubmit={handleClickSubmit} />
+                <ChatInput register={register} handleClickSubmit={handleClickSubmit} />
             </Contents>
         </Wrapper>
     );

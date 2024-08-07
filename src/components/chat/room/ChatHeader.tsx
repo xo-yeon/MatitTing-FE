@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { ChatRoomInfoResponse } from 'types/chat/chatRooms';
 import { HeaderBackButton } from '@components/common/HeaderBackButton';
 
-interface HeaderBtnGroupProps {
+interface ChatHeaderProps {
     roomInfo: ChatRoomInfoResponse;
     isOpenUserList: boolean;
     handleOpenUserList: MouseEventHandler<HTMLButtonElement>;
@@ -29,7 +29,7 @@ const MenuBtn = styled.button`
 
 const ChatTitle = styled.h3``;
 
-const HeaderBtnGroup = ({ roomInfo, isOpenUserList, handleOpenUserList }: HeaderBtnGroupProps) => (
+const ChatHeader = ({ roomInfo, isOpenUserList, handleOpenUserList }: ChatHeaderProps) => (
     <Wrapper>
         <HeaderBackButton />
         <ChatTitle>{roomInfo?.chatRoomInfoRes.title}</ChatTitle>
@@ -45,4 +45,4 @@ const HeaderBtnGroup = ({ roomInfo, isOpenUserList, handleOpenUserList }: Header
     </Wrapper>
 );
 
-export default HeaderBtnGroup;
+export default ChatHeader;

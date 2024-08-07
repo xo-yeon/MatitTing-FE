@@ -18,12 +18,12 @@ const SubmitButton = styled.button`
     background-color: #efebec;
 `;
 
-interface BottomInputGroupProps {
+interface ChatInputProps {
     handleClickSubmit: (e: MouseEvent<HTMLButtonElement>) => Promise<void>;
     register: UseFormRegister<any>;
 }
 
-const BottomInputGroup = ({ register, handleClickSubmit }: BottomInputGroupProps) => (
+const ChatInput = ({ register, handleClickSubmit }: ChatInputProps) => (
     <Wrapper>
         <TextInput isBorderRadius={false} maxLength={20} {...register('message')} />
         <SubmitButton type="submit" onClick={handleClickSubmit}>
@@ -32,4 +32,4 @@ const BottomInputGroup = ({ register, handleClickSubmit }: BottomInputGroupProps
     </Wrapper>
 );
 
-export default BottomInputGroup;
+export default ChatInput;
