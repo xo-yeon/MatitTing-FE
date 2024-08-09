@@ -2,12 +2,10 @@ import { GetServerSideProps, NextPage } from 'next';
 import { ChangeEvent, useEffect } from 'react';
 import styled from '@emotion/styled';
 import Create from '@components/party/create/Create';
-import SearchMap from '@components/party/create/SearchMap';
-import useSearchPlace from '@hooks/useSearchPlace';
 import { DefaultHeader } from '@components/common/DefaultHeader';
 import { postParty } from 'src/api/postParty';
 import * as yup from 'yup';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import router from 'next/router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -37,6 +35,9 @@ export const partySchema = yup.object({
     menu: yup.string().required(),
     thumbnail: yup.string(),
     status: yup.string(),
+    partyPlaceName: yup.string().required(),
+    latitude: yup.number().required(),
+    longitude: yup.number().required(),
 });
 
 interface CreatePageProviderProps {
@@ -55,59 +56,37 @@ export const CreatePage = () => {
         mutationFn: postUploadImage,
     });
 
-    const { marker, keyword, resultList, reset, handleChangeSearchBox, handleClickPlace } =
-        useSearchPlace();
-
-    const {
-        handleSubmit,
-        register,
-        formState: { isValid },
-        setValue,
-        getValues,
-    } = useForm<PartyForm>({
+    const methods = useForm<PartyForm>({
         resolver: yupResolver(partySchema),
         mode: 'onSubmit',
         defaultValues: {
             thumbnail: '/images/default_thumbnail.jpg',
+            totalParticipant: 2,
+            age: 'ALL',
+            category: 'KOREAN',
+            gender: 'ALL',
         },
     });
 
-    const onSubmitPartyForm: SubmitHandler<PartyForm> = (formData: PartyForm) => {
-        if (!marker || !marker.position) return;
+    const onSubmitPartyForm: SubmitHandler<PartyForm> = (formData: PartyForm) =>
+        postPartyCreate(formData, {
+            onSuccess: async ({ data }) => {
+                if (data) {
+                    await queryClient.invalidateQueries({
+                        queryKey: [
+                            API_GET_MAIN_PAGE,
+                            { latitude: position.coords.x, longitude: position.coords.y },
+                        ],
+                    });
 
-        postPartyCreate(
-            {
-                ...formData,
-                partyPlaceName: marker.content,
-                latitude: marker.position.lat,
-                longitude: marker.position.lng,
+                    await queryClient.invalidateQueries({
+                        queryKey: [API_GET_CHAT_ROOMS_KEY],
+                    });
+
+                    router.replace(`/party/${data.partyId}`);
+                }
             },
-            {
-                onSuccess: async ({ data }) => {
-                    if (data) {
-                        await queryClient.invalidateQueries({
-                            queryKey: [
-                                API_GET_MAIN_PAGE,
-                                { latitude: position.coords.x, longitude: position.coords.y },
-                            ],
-                        });
-
-                        queryClient.invalidateQueries({
-                            queryKey: [API_GET_CHAT_ROOMS_KEY],
-                        });
-
-                        router.replace(`/party/${data.partyId}`);
-                    }
-                },
-            },
-        );
-    };
-
-    const rightHeaderArea = (
-        <button type="submit" disabled={!marker?.position.lat || !isValid}>
-            완료
-        </button>
-    );
+        });
 
     const handleChangeThumbnail = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -117,31 +96,26 @@ export const CreatePage = () => {
             postImage(files[0], {
                 onSuccess({ imgUrl }) {
                     if (imgUrl) {
-                        setValue('thumbnail', imgUrl);
+                        methods.setValue('thumbnail', imgUrl);
                     }
                 },
             });
         }
     };
 
+    const rightHeaderArea = (
+        <button type="submit" disabled={!methods.formState.isValid}>
+            완료
+        </button>
+    );
+
     return (
-        <Form onSubmit={handleSubmit(onSubmitPartyForm)}>
-            <DefaultHeader centerArea="파티 생성" rightArea={rightHeaderArea} />
-            <Create
-                register={register}
-                getValues={getValues}
-                onChangeThumbnail={handleChangeThumbnail}
-            >
-                <SearchMap
-                    marker={marker}
-                    resultList={resultList}
-                    keyword={keyword}
-                    reset={reset}
-                    handleChangeSearchBox={handleChangeSearchBox}
-                    handleClickPlace={handleClickPlace}
-                />
-            </Create>
-        </Form>
+        <FormProvider {...methods}>
+            <Form onSubmit={methods.handleSubmit(onSubmitPartyForm)}>
+                <DefaultHeader centerArea="파티 생성" rightArea={rightHeaderArea} />
+                <Create onChangeThumbnail={handleChangeThumbnail} />
+            </Form>
+        </FormProvider>
     );
 };
 
