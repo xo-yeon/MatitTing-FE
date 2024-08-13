@@ -15,6 +15,7 @@ import { PositionSate } from 'src/recoil-states/positionStates';
 import { useRecoilValue } from 'recoil';
 import { API_GET_MAIN_PAGE } from 'src/api/getPartyMainPage';
 import getProfile, { API_GET_PROFILE_KEY } from 'src/api/getProfile';
+import { HeaderBackButton } from '@components/common/HeaderBackButton';
 
 const Form = styled.form`
     display: flex;
@@ -104,7 +105,7 @@ const CreatePage: NextPage = () => {
     return data?.partyTitle ? (
         <FormProvider {...methods}>
             <Form onSubmit={methods.handleSubmit(onSubmitPartyForm)}>
-                <DefaultHeader centerArea={`${data.partyTitle}`} />
+                <DefaultHeader centerArea={`${data.partyTitle}`} leftArea={<HeaderBackButton />} />
                 <Create onChangeThumbnail={handleChangeThumbnail} />
             </Form>
         </FormProvider>
