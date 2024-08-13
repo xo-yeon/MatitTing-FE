@@ -4,7 +4,7 @@ import { displayTime } from '../list/ChatRoomList';
 import { ChatMessagesType } from 'types/chat/chat';
 import { ObserverTrigger } from '@components/hoc/ObserverTrigger';
 import Image from 'next/image';
-import { ChatUserInfo } from 'types/chat/chatRooms';
+import { MyInfo } from 'types/chat/chatRooms';
 
 const List = styled.ul`
     padding: 0 2rem;
@@ -77,23 +77,18 @@ const Notification = styled.div`
 `;
 
 interface MessageListProps {
-    chatUserInfo: ChatUserInfo;
+    myInfo: MyInfo;
     messages: ChatMessagesType[];
     onObserve: VoidFunction;
     observerMinHeight: string;
 }
 
-const MessageList = ({
-    messages,
-    onObserve,
-    observerMinHeight,
-    chatUserInfo,
-}: MessageListProps) => (
+const MessageList = ({ messages, onObserve, observerMinHeight, myInfo }: MessageListProps) => (
     <List>
         {messages.map(({ message, nickname, createAt, imgUrl, messageType }) => {
             return messageType === 'TALK' ? (
-                <ListItem key={createAt} isChecked={nickname === chatUserInfo.nickname}>
-                    <ImageBox isChecked={nickname === chatUserInfo.nickname}>
+                <ListItem key={createAt} isChecked={nickname === myInfo.nickname}>
+                    <ImageBox isChecked={nickname === myInfo.nickname}>
                         <Image
                             src="/images/profile/profile.png"
                             fill
@@ -101,15 +96,13 @@ const MessageList = ({
                             alt="프로필 이미지"
                         />
                     </ImageBox>
-                    <MessageBox isChecked={nickname === chatUserInfo.nickname}>
+                    <MessageBox isChecked={nickname === myInfo.nickname}>
                         <TextBox>
-                            <NickName isChecked={nickname === chatUserInfo.nickname}>
-                                {nickname}
-                            </NickName>
+                            <NickName isChecked={nickname === myInfo.nickname}>{nickname}</NickName>
                             <Message>{message}</Message>
                         </TextBox>
                     </MessageBox>
-                    <ReadMark isChecked={nickname === chatUserInfo.nickname}>
+                    <ReadMark isChecked={nickname === myInfo.nickname}>
                         {createAt ? displayTime(String(createAt)) : ''}
                     </ReadMark>
                 </ListItem>

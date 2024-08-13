@@ -1,16 +1,16 @@
-import ChatInput from '@components/chat/room/ChatInput';
 import ChatHeader from '@components/chat/room/ChatHeader';
 import MessageList from '@components/chat/room/MessageList';
 import styled from '@emotion/styled';
-import { InfiniteData, useQuery, useQueryClient } from '@tanstack/react-query';
-import { MouseEvent, useState, useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { MouseEvent, useState } from 'react';
 import getChatMessage, { API_GET_CHAT_MESSAGE_KEY } from 'src/api/getChatMessage';
-import { IMessage, Client } from '@stomp/stompjs';
 import getChatRoomInfo, { API_GET_CHAT_ROOM_INFO_KEY } from 'src/api/getChatRoomInfo';
-import { getCookie } from 'cookies-next';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { ChatMessagesType, InfinitePaginationChatDataType } from 'types/chat/chat';
+import useChat from '@hooks/useChat';
+import TextInput from '@components/common/TextInput';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,15 +26,35 @@ const Contents = styled.main`
     justify-content: flex-end;
 `;
 
+const Form = styled.form`
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 1rem 2rem;
+    background-color: #ddd;
+`;
+
+const SubmitButton = styled.button`
+    width: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #efebec;
+`;
+
 interface ChattingRoomProps {
-    roomId: string;
+    roomId: number;
 }
 
 const ChatRoom = ({ roomId }: ChattingRoomProps) => {
-    const refreshToken = getCookie('refreshToken');
-    const queryClient = useQueryClient();
-    const client = useRef<Client | null>(null);
-    const { register, getValues, setValue } = useForm();
+    const { publish } = useChat(roomId);
+    const methods = useForm<{ message: string }>({
+        resolver: yupResolver(
+            yup.object({
+                message: yup.string().required(),
+            }),
+        ),
+        mode: 'onSubmit',
+    });
     const [isOpenUserList, setIsOpenUserList] = useState(false);
 
     const { data: roomInfo } = useQuery({
@@ -66,108 +86,15 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
         setIsOpenUserList(!isOpenUserList);
     };
 
-    useEffect(() => {
-        if (!roomId && !refreshToken) return;
+    const onSubmit: SubmitHandler<{ message: string }> = async ({
+        message,
+    }: {
+        message: string;
+    }) => {
+        if (!roomInfo?.responseChatUserList.myInfo) return;
 
-        const connect = () => {
-            client.current = new Client({
-                brokerURL: 'ws://localhost:8080/ws',
-                connectHeaders: {
-                    Authorization: String(refreshToken),
-                },
-                reconnectDelay: 0, // 자동 재연결
-                heartbeatIncoming: 10000,
-                heartbeatOutgoing: 10000,
-                onConnect: () => {
-                    client.current?.subscribe(
-                        `/sub/chat/room/${Number(roomId)}`,
-                        async (res: IMessage) => {
-                            const LIST_QUERY_KEY = [API_GET_CHAT_MESSAGE_KEY, { roomId }];
-                            type LIST_QUERY_TYPE = InfiniteData<
-                                InfinitePaginationChatDataType<
-                                    'responseChatDtoList',
-                                    ChatMessagesType | string
-                                >,
-                                unknown
-                            >;
-
-                            await queryClient.cancelQueries({ queryKey: LIST_QUERY_KEY });
-
-                            const regex = /chatUserId/g;
-
-                            if (regex.test(res.body)) {
-                                const message = JSON.parse(res.body);
-
-                                await queryClient.setQueryData(
-                                    LIST_QUERY_KEY,
-                                    (prev: LIST_QUERY_TYPE) => {
-                                        let newList = prev;
-
-                                        // last pages unshift
-                                        newList.pages[0].responseChatDtoList.unshift({
-                                            chatId: message.createAt,
-                                            createAt: message.createAt,
-                                            imgUrl: message.userImage,
-                                            message: message.message,
-                                            messageType: 'TALK',
-                                            nickname: message.nickname,
-                                            senderId: message.chatUserId,
-                                        });
-
-                                        return newList;
-                                    },
-                                );
-                            } else {
-                                await queryClient.setQueryData(
-                                    LIST_QUERY_KEY,
-                                    (prev: LIST_QUERY_TYPE) => {
-                                        let newList = prev;
-
-                                        // last pages unshift
-                                        newList.pages[0].responseChatDtoList.unshift(res.body);
-
-                                        return newList;
-                                    },
-                                );
-                            }
-
-                            await queryClient.invalidateQueries({
-                                queryKey: [API_GET_CHAT_MESSAGE_KEY, { roomId }],
-                            });
-                        },
-                    );
-                },
-            });
-
-            client.current.activate();
-        };
-
-        connect();
-
-        // return () => client.current?.deactivate();
-    }, [queryClient, refreshToken, roomId]);
-
-    const handleClickSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (!roomInfo?.responseChatUserList) return;
-
-        const currentTime = Date.now();
-        const message = getValues('message');
-
-        await client.current?.publish({
-            destination: `/pub/message`,
-            body: JSON.stringify({
-                type: 'TALK',
-                roomId: Number(roomId),
-                userImage: roomInfo?.responseChatUserList.chatUserInfo?.userProfileImg,
-                nickname: roomInfo?.responseChatUserList.chatUserInfo.nickname,
-                chatUserId: Number(roomInfo?.responseChatUserList.chatUserInfo.chatUserId),
-                message: message,
-                createAt: currentTime,
-            }),
-        });
-
-        setValue('message', '');
+        publish(roomInfo?.responseChatUserList.myInfo, message);
+        methods.reset();
     };
 
     const onObserve = () => hasNextPage && fetchNextPage();
@@ -185,13 +112,18 @@ const ChatRoom = ({ roomId }: ChattingRoomProps) => {
             <Contents>
                 {roomInfo ? (
                     <MessageList
-                        chatUserInfo={roomInfo?.responseChatUserList.chatUserInfo}
+                        myInfo={roomInfo?.responseChatUserList.myInfo}
                         messages={messages}
                         onObserve={onObserve}
                         observerMinHeight="10px"
                     />
                 ) : null}
-                <ChatInput register={register} handleClickSubmit={handleClickSubmit} />
+                <FormProvider {...methods}>
+                    <Form onSubmit={methods.handleSubmit(onSubmit)}>
+                        <TextInput maxLength={20} {...methods.register('message')} />
+                        <SubmitButton type="submit">전송</SubmitButton>
+                    </Form>
+                </FormProvider>
             </Contents>
         </Wrapper>
     );

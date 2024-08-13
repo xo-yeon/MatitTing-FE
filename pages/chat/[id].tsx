@@ -4,7 +4,7 @@ import ChatRoom from '@components/chat/room/ChatRoom';
 import ProfileLoading from '@components/profile/ProfileLoading';
 
 interface ChatRoomPageProps {
-    roomId: string;
+    roomId: number;
 }
 
 const ChatRoomPage = ({ roomId }: ChatRoomPageProps) => (
@@ -19,6 +19,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const { id: roomId } = params as { id: string };
 
     return {
-        props: { roomId },
+        props: { roomId: Number(roomId) },
     };
 };

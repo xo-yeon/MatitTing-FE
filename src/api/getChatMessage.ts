@@ -2,7 +2,7 @@ import defaultRequest from 'src/lib/axios/defaultRequest';
 import { ChatMessagesType, InfinitePaginationChatDataType } from 'types/chat/chat';
 
 interface ChatMessageParams {
-    roomId: string;
+    roomId: number;
     page: number;
 }
 

@@ -29,10 +29,10 @@ export interface ChatRoomInfo {
 
 export interface ChatUserResponse {
     chatRoomUserDto: ChatUserListResponse[];
-    chatUserInfo: ChatUserInfo;
+    myInfo: MyInfo;
 }
 
-export interface ChatUserInfo {
+export interface MyInfo {
     chatUserId: number;
     nickname: string;
     role: string;
