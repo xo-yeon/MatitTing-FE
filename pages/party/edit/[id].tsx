@@ -94,8 +94,8 @@ const CreatePage: NextPage = () => {
     };
 
     useEffect(() => {
+        // useForm에서는 초기값이 비동기적으로 적용이 되지 않아 따로 적용
         if (isFetched) {
-            console.log('완료됨', data);
             methods.reset({
                 ...data,
             });

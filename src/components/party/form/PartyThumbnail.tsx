@@ -6,7 +6,6 @@ import { NewColor } from 'styles/Color';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Container, Title } from '../FormStyle';
 
-// const Wrapper = styled.div``;
 const ImageBox = styled.div`
     position: relative;
     margin-bottom: 8px;
@@ -39,8 +38,8 @@ const ImageAdd = styled.label`
     cursor: pointer;
 `;
 
-const ImageAddIcon = styled(AddCircleOutlineIcon)<{ isThumbnail: boolean }>`
-    color: ${(props) => (props.isThumbnail ? '#fff' : NewColor.border)};
+const ImageAddIcon = styled(AddCircleOutlineIcon)<{ isthumbnail: boolean }>`
+    color: ${({ isthumbnail }) => (isthumbnail ? '#fff' : NewColor.border)};
 `;
 
 interface PartyThumbnailProps {
@@ -56,7 +55,7 @@ const PartyThumbnail = ({ onChangeThumbnail }: PartyThumbnailProps) => {
             <Title>대표 이미지</Title>
             <ImageBox>
                 <ImageAdd htmlFor="input-file">
-                    <ImageAddIcon isThumbnail={!!thumbnail} />
+                    <ImageAddIcon isthumbnail={thumbnail} />
                 </ImageAdd>
                 <input
                     id="input-file"

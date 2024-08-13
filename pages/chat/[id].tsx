@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { GetServerSideProps } from 'next';
 import QuerySuspenseErrorBoundary from '@components/hoc/QuerySuspenseErrorBoundary';
 import ChatRoom from '@components/chat/room/ChatRoom';
