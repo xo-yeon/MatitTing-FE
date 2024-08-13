@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import styled from '@emotion/styled';
-import Create from '@components/party/create/Create';
+import Create from '@components/party/Create';
 import { DefaultHeader } from '@components/common/DefaultHeader';
 import { patchParty } from 'src/api/patchParty';
 import getPartyDetail, { API_GET_PARTY_DETAIL_KEY } from 'src/api/getPartyDetail';
@@ -22,7 +22,7 @@ const Form = styled.form`
     justify-content: space-between;
     height: 100%;
     min-height: calc(100vh);
-    padding: 45px 0 75px 0;
+    padding: 45px 1rem 0 1rem;
 `;
 
 const CreatePage: NextPage = () => {
@@ -36,7 +36,7 @@ const CreatePage: NextPage = () => {
         queryFn: () => getProfile(),
     });
 
-    const { data } = useQuery({
+    const { data, isFetched } = useQuery({
         queryKey: [API_GET_PARTY_DETAIL_KEY, { id }],
         queryFn: () => getPartyDetail({ id, userId: String(profileData?.userId) }),
         enabled: !!id && !!profileData,
@@ -53,13 +53,6 @@ const CreatePage: NextPage = () => {
     const methods = useForm<PartyForm>({
         resolver: yupResolver(partySchema),
         mode: 'onSubmit',
-        defaultValues: data || {
-            thumbnail: '/images/default_thumbnail.jpg',
-            totalParticipant: 2,
-            age: 'ALL',
-            category: 'KOREAN',
-            gender: 'ALL',
-        },
     });
 
     const onSubmitPartyForm: SubmitHandler<PartyForm> = (formData: PartyForm) =>
@@ -99,25 +92,24 @@ const CreatePage: NextPage = () => {
         }
     };
 
-    const rightHeaderArea = (
-        <button type="submit" disabled={!methods.formState.isValid}>
-            완료
-        </button>
-    );
+    useEffect(() => {
+        if (isFetched) {
+            console.log('완료됨', data);
+            methods.reset({
+                ...data,
+            });
+        }
+    }, [data, isFetched, methods]);
 
-    if (!data) return <></>;
-
-    return (
+    return data?.partyTitle ? (
         <FormProvider {...methods}>
             <Form onSubmit={methods.handleSubmit(onSubmitPartyForm)}>
-                <DefaultHeader centerArea={`${'ㅇㅇㅇ'}`} rightArea={rightHeaderArea} />
-                <Create
-                    onChangeThumbnail={handleChangeThumbnail}
-                    partyId={data?.partyId}
-                    defaultData={data}
-                />
+                <DefaultHeader centerArea={`${data.partyTitle}`} />
+                <Create onChangeThumbnail={handleChangeThumbnail} />
             </Form>
         </FormProvider>
+    ) : (
+        <></>
     );
 };
 

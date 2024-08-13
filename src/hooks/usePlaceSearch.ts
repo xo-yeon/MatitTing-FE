@@ -17,36 +17,36 @@ const usePlaceSearch = () => {
             setValue('partyPlaceName', place_name);
             setValue('latitude', y);
             setValue('longitude', x);
+
             reset();
         },
         [setValue],
     );
 
-    const handleChangeSearchBox = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {
-            setKeyword(e.target.value);
-            const places = new kakao.maps.services.Places();
+    const handleChangeSearchBox = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        setKeyword(e.target.value);
+        const places = new kakao.maps.services.Places();
 
-            places.keywordSearch(
-                e.target.value,
-                (data, status, _pagination) => {
-                    const resultStatus = kakao.maps.services.Status;
-                    if (status === resultStatus.ERROR) return;
+        places.keywordSearch(
+            e.target.value,
+            (data, status, _pagination) => {
+                const resultStatus = kakao.maps.services.Status;
+                if (status === resultStatus.ERROR) return;
 
-                    if (status === resultStatus.ZERO_RESULT) return;
+                if (status === resultStatus.ZERO_RESULT) {
+                    setPlaces(null);
+                }
 
-                    if (status === resultStatus.OK) {
-                        return setPlaces(data);
-                    }
-                },
-                {
-                    category_group_code: 'FD6',
-                    size: 8,
-                },
-            );
-        },
-        [setPlaces],
-    );
+                if (status === resultStatus.OK) {
+                    return setPlaces(data);
+                }
+            },
+            {
+                category_group_code: 'FD6',
+                size: 8,
+            },
+        );
+    }, []);
 
     return {
         keyword,

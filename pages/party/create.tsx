@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { ChangeEvent, useEffect } from 'react';
 import styled from '@emotion/styled';
-import Create from '@components/party/create/Create';
+import Create from '@components/party/Create';
 import { DefaultHeader } from '@components/common/DefaultHeader';
 import { postParty } from 'src/api/postParty';
 import * as yup from 'yup';
@@ -14,22 +14,27 @@ import { useRecoilValue } from 'recoil';
 import { API_GET_MAIN_PAGE } from 'src/api/getPartyMainPage';
 import { PositionSate } from 'src/recoil-states/positionStates';
 import { API_GET_CHAT_ROOMS_KEY } from 'src/api/getChatRooms';
+import dayjs from 'dayjs';
 
 const Form = styled.form`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    max-width: 760px;
+    min-width: 320px;
     height: 100%;
     min-height: calc(100vh);
-    padding: 45px 0 75px 0;
+    margin: 0 auto;
+    padding: 45px 1rem 0 1rem;
 `;
 
 export const partySchema = yup.object({
     partyTitle: yup.string().min(2, '2자 이상 입력해주세요').required(),
-    partyContent: yup.string().required(),
+    partyContent: yup.string().max(50, '50자 이하로 작성해주세요').required(),
     partyTime: yup.string().required(),
     gender: yup.string().required(),
     category: yup.string().required(),
+    // age: yup.mixed<string[]>().required(),
     age: yup.string().required(),
     totalParticipant: yup.number().required(),
     menu: yup.string().required(),
@@ -60,11 +65,11 @@ export const CreatePage = () => {
         resolver: yupResolver(partySchema),
         mode: 'onSubmit',
         defaultValues: {
-            thumbnail: '/images/default_thumbnail.jpg',
             totalParticipant: 2,
             age: 'ALL',
             category: 'KOREAN',
             gender: 'ALL',
+            partyTime: dayjs().format('YYYY-MM-DDTHH:mm'),
         },
     });
 
@@ -103,16 +108,10 @@ export const CreatePage = () => {
         }
     };
 
-    const rightHeaderArea = (
-        <button type="submit" disabled={!methods.formState.isValid}>
-            완료
-        </button>
-    );
-
     return (
         <FormProvider {...methods}>
             <Form onSubmit={methods.handleSubmit(onSubmitPartyForm)}>
-                <DefaultHeader centerArea="파티 생성" rightArea={rightHeaderArea} />
+                <DefaultHeader centerArea="파티 생성" />
                 <Create onChangeThumbnail={handleChangeThumbnail} />
             </Form>
         </FormProvider>

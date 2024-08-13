@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { ChangeEvent, InputHTMLAttributes, MouseEventHandler, forwardRef } from 'react';
-import { ColorToken } from 'styles/Color';
+import { ChangeEvent, InputHTMLAttributes, forwardRef } from 'react';
+import { NewColor } from 'styles/Color';
 
 interface InputStyleProps {
     isBorderRadius?: boolean;
@@ -16,21 +16,17 @@ const Input = styled.input<InputStyleProps>`
     width: 100%;
     height: 100%;
     padding: 10px 14px;
+    color: ${NewColor.text_secondary};
     border: ${({ errorMessage }) =>
-        errorMessage ? `1px solid red` : `1px solid ${ColorToken.text_primary}`};
+        errorMessage ? `1px solid red` : `1px solid ${NewColor.border}`};
     background: '#f9f9f9';
-    border-radius: ${({ isBorderRadius }) => (isBorderRadius ? '10px' : '0')};
+    border-radius: ${({ isBorderRadius }) => (isBorderRadius ? '5px' : '0')};
     &:focus {
         outline: 'none';
     }
-`;
-
-const Reset = styled.button`
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translate(-20%, -50%);
-    font-size: 16px;
+    &::placeholder {
+        color: ${NewColor.disabled_text};
+    }
 `;
 
 const ErrorText = styled.p`
@@ -44,12 +40,10 @@ interface TextInputProps extends InputProps {
     whiteSpace?: boolean;
     isBorderRadius?: boolean;
     errorMessage?: string;
-    isReset?: boolean;
-    onClickReset?: MouseEventHandler<HTMLButtonElement>;
 }
 
 const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
-    ({ whiteSpace, isBorderRadius, errorMessage, isReset, onClickReset, ...rest }, ref) => {
+    ({ whiteSpace, isBorderRadius = true, errorMessage, ...rest }, ref) => {
         const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
             if (!whiteSpace) {
                 e.target.value = e.target.value.replace(/\s/gi, '');
@@ -67,7 +61,6 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
                     {...rest}
                     ref={ref}
                 />
-                {isReset ? <Reset onClick={onClickReset}>x</Reset> : null}
                 {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
             </Container>
         );
